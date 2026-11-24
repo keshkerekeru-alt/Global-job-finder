@@ -185,3 +185,25 @@ export async function recordSourceCheck(input: {
     message: "Source-check result recorded in the shared catalog history."
   };
 }
+
+export async function searchCompanyDirectory(input: {
+  query?: string;
+  country?: string;
+  company_type?: "employer" | "recruitment_agency" | "public_agency" | "other";
+  limit?: number;
+}) {
+  const rows = await request("rpc/search_company_directory", {
+    method: "POST",
+    body: JSON.stringify({
+      p_query: input.query?.trim() || null,
+      p_country: input.country?.trim() || null,
+      p_company_type: input.company_type ?? null,
+      p_limit: Math.max(1, Math.min(input.limit ?? 20, 50))
+    })
+  }) as Array<Record<string, unknown>>;
+  return {
+    companies: rows,
+    count: rows.length,
+    note: "Company records are shared across users. Imported Notion records are marked unverified until checked against the company's current official website. Contacts are role-based addresses only where available; absence of an email does not mean the company has no contact route."
+  };
+}
