@@ -79,12 +79,12 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
   const appId = process.env.ADZUNA_APP_ID;
   const appKey = process.env.ADZUNA_APP_KEY;
   if (!appId || !appKey) return [];
-  const countryCodes = countries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 5);
+  const searchCountries = countries.length ? countries : ["United Kingdom", "United States", "Canada", "Australia", "Germany"];\n  const countryCodes = searchCountries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 5);
   if (!countryCodes.length) return [];
   const groups = await Promise.all(countryCodes.map(async code => {
     const params = new URLSearchParams({
       app_id: appId, app_key: appKey, results_per_page: String(limit),
-      what: input.keywords, content_type: "application/json"
+      what: [input.keywords, input.category].filter(Boolean).join(" "), content_type: "application/json"
     });
     if (input.location) params.set("where", input.location);
     const response = await fetch(`https://api.adzuna.com/v1/api/jobs/${code}/search/${input.page ?? 1}?${params}`, {
