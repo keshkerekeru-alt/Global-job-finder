@@ -22,7 +22,7 @@ export async function searchGlobalJobs(input: JobSearchInput) {
     ? `Found ${result.jobs.length} job listings from ${result.providers.join(" and ")}. Check original source pages. Visa wording is evidence only, not a sponsorship guarantee.`
     : result.configured
       ? `No matching vacancies were returned. ${result.errors.join("; ") || "Try broader keywords, another country, or another page."}`
-      : "Live search is not configured. Add TAVILY_API_KEY for general web search and/or Adzuna and Jooble credentials for job-board APIs. No sample vacancies are fabricated.";
+      : "Live job-board search is not configured. Configure Adzuna and/or regional Jooble API credentials, or use ChatGPT web search separately. No sample vacancies are fabricated.";
   return {
     query: input.keywords,
     results: result.jobs.map(job => ({
