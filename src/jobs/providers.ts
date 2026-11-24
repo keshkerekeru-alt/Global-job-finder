@@ -27,10 +27,11 @@ export type GlobalJob = {
 const ADZUNA_COUNTRIES: Record<string, string> = {
   australia: "au", austria: "at", belgium: "be", brazil: "br", canada: "ca",
   germany: "de", france: "fr", india: "in", ireland: "ie", italy: "it",
-  mexico: "mx", netherlands: "nl", newzealand: "nz", poland: "pl",
-  singapore: "sg", southafrica: "za", "south africa": "za", spain: "es", sweden: "se",
-  switzerland: "ch", unitedkingdom: "gb", "united kingdom": "gb", uk: "gb", usa: "us",
-  "united states": "us", "united states of america": "us", "new zealand": "nz"
+  mexico: "mx", netherlands: "nl", newzealand: "nz", "new zealand": "nz",
+  poland: "pl", singapore: "sg", southafrica: "za", "south africa": "za",
+  spain: "es", sweden: "se", switzerland: "ch", unitedkingdom: "gb",
+  "united kingdom": "gb", uk: "gb", usa: "us", "united states": "us",
+  "united states of america": "us"
 };
 
 function normalizeCountry(value: string) {
@@ -39,10 +40,11 @@ function normalizeCountry(value: string) {
 
 function visaEvidence(description: string) {
   const text = description.toLowerCase();
-  if (/visa sponsorship|sponsor(?:ship|ing)? (?:a |the )?work visa|work permit sponsorship|sponsorship available|will sponsor (?:a )?visa/.test(text)) {
+  const negative = /no sponsorship|unable to sponsor|cannot sponsor|must have (?:the )?right to work|right to work required|valid work authori[sz]ation required/.test(text);
+  if (!negative && /visa sponsorship|sponsor(?:ship|ing)? (?:a |the )?work visa|work permit sponsorship|sponsorship available|will sponsor (?:a )?visa/.test(text)) {
     return "Employer wording mentions visa/work-permit sponsorship; verify directly with employer.";
   }
-  if (/must have (?:the )?right to work|right to work required|valid work authorization|no sponsorship|unable to sponsor|cannot sponsor/.test(text)) {
+  if (negative) {
     return "The listing mentions existing work authorization or no sponsorship; inspect the exact wording.";
   }
   return "No explicit visa-sponsorship statement detected in the returned description.";
@@ -79,16 +81,23 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
   const appId = process.env.ADZUNA_APP_ID;
   const appKey = process.env.ADZUNA_APP_KEY;
   if (!appId || !appKey) return [];
-  const searchCountries = countries.length ? countries : ["United Kingdom", "United States", "Canada", "Australia", "Germany"];\n  const countryCodes = searchCountries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 5);
+  const searchCountries = countries.length
+    ? countries
+    : ["United Kingdom", "United States", "Canada", "Australia", "Germany"];
+  const countryCodes = searchCountries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 5);
   if (!countryCodes.length) return [];
   const groups = await Promise.all(countryCodes.map(async code => {
     const params = new URLSearchParams({
-      app_id: appId, app_key: appKey, results_per_page: String(limit),
-      what: [input.keywords, input.category].filter(Boolean).join(" "), content_type: "application/json"
+      app_id: appId,
+      app_key: appKey,
+      results_per_page: String(limit),
+      what: [input.keywords, input.category].filter(Boolean).join(" "),
+      content_type: "application/json"
     });
-    if (input.location) params.set("where", input.location);
+    if (input.location && countryCodes.length === 1) params.set("where", input.location);
     const response = await fetch(`https://api.adzuna.com/v1/api/jobs/${code}/search/${input.page ?? 1}?${params}`, {
-      headers: { accept: "application/json" }, signal: AbortSignal.timeout(12000)
+      headers: { accept: "application/json" },
+      signal: AbortSignal.timeout(12000)
     });
     if (!response.ok) throw new Error(`Adzuna ${code}: HTTP ${response.status}`);
     const data = await response.json() as { results?: any[] };
@@ -127,12 +136,14 @@ export async function searchProviders(input: JobSearchInput) {
   const jobs: GlobalJob[] = [];
   const errors: string[] = [];
   const tasks: Array<{ name: string; run: () => Promise<GlobalJob[]> }> = [];
-  if (process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY && countries.length) {
+
+  if (process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
     tasks.push({ name: "Adzuna", run: () => searchAdzuna(input, countries, limit) });
   }
   if (process.env.JOOBLE_API_KEY) {
     tasks.push({ name: "Jooble", run: () => searchJooble(input, countries, limit) });
   }
+
   const settled = await Promise.allSettled(tasks.map(task => task.run()));
   settled.forEach((item, index) => {
     if (item.status === "fulfilled") {
@@ -142,10 +153,36 @@ export async function searchProviders(input: JobSearchInput) {
       errors.push(`${tasks[index].name}: ${item.reason instanceof Error ? item.reason.message : "provider request failed"}`);
     }
   });
+
   const unique = new Map<string, GlobalJob>();
   for (const job of jobs) {
     const key = job.url.toLowerCase().replace(/\/$/, "");
     if (!unique.has(key)) unique.set(key, job);
   }
-  return { jobs: [...unique.values()].slice(0, limit), providers, configured: tasks.length > 0, errors };
+
+  let selected = [...unique.values()];
+  if (input.employment_type && input.employment_type !== "any") {
+    const wanted = input.employment_type.replace(/-/g, " ");
+    selected = selected.filter(job => {
+      const typeText = `${job.employment_type} ${job.title} ${job.description}`.toLowerCase();
+      if (wanted === "full time") return /full[ -]?time|permanent/i.test(typeText) || job.employment_type === "Not provided";
+      if (wanted === "part time") return /part[ -]?time/i.test(typeText) || job.employment_type === "Not provided";
+      if (wanted === "seasonal") return /seasonal|season|harvest/i.test(typeText) || job.employment_type === "Not provided";
+      if (wanted === "temporary") return /temporary|temp\b|seasonal/i.test(typeText) || job.employment_type === "Not provided";
+      if (wanted === "contract") return /contract|fixed.term|freelance/i.test(typeText) || job.employment_type === "Not provided";
+      if (wanted === "internship") return /intern(ship)?|trainee/i.test(typeText) || job.employment_type === "Not provided";
+      return true;
+    });
+  }
+
+  if (input.visa_sponsorship === "required") {
+    selected = selected.filter(job => job.visa_evidence.startsWith("Employer wording mentions"));
+  } else if (input.visa_sponsorship === "preferred") {
+    selected.sort((a, b) =>
+      Number(b.visa_evidence.startsWith("Employer wording mentions")) -
+      Number(a.visa_evidence.startsWith("Employer wording mentions"))
+    );
+  }
+
+  return { jobs: selected.slice(0, limit), providers, configured: tasks.length > 0, errors };
 }
