@@ -4,11 +4,8 @@ export async function searchWebJobs(input: JobSearchInput, limit: number): Promi
   const key = process.env.TAVILY_API_KEY;
   if (!key) return [];
   const destinations = (input.countries ?? []).join(", ");
-  const baseTerms = [
-    input.keywords, input.category, destinations, input.location,
-    input.visa_sponsorship === "required" ? '"visa sponsorship" OR "work permit support"' : ""
-  ].filter(Boolean).join(" ");
-  // Run broad discovery and official-source discovery in parallel so APIs are not the only source.
+  const baseTerms = [input.keywords, input.category, destinations, input.location,
+    input.visa_sponsorship === "required" ? '"visa sponsorship" OR "work permit support"' : ""].filter(Boolean).join(" ");
   const queries = [
     `${baseTerms} jobs vacancies careers`,
     `${baseTerms} official employer careers job vacancies public employment service EURES government job portal`
@@ -28,21 +25,19 @@ export async function searchWebJobs(input: JobSearchInput, limit: number): Promi
   for (const response of responses) for (const item of response.results ?? []) {
     const url = String(item.url ?? "");
     if (!/^https?:\/\//i.test(url)) continue;
+    const normalizedUrl = url.toLowerCase().replace(/\/$/, "");
     const description = String(item.raw_content || item.content || "").slice(0, 1800);
     const host = new URL(url).hostname.replace(/^www\./, "");
-    const job: GlobalJob = {
+    if (!unique.has(normalizedUrl)) unique.set(normalizedUrl, {
       id: `web:${url}`, title: String(item.title ?? "Web search result"),
       employer: "See source", country: destinations || "Not specified",
       location: input.location || destinations || "Not specified", url,
-      source: "General web search", description, salary: "", employment_type: "Not stated",
+      source: `General web search: ${host}`, description, salary: "", employment_type: "Not stated",
       visa_evidence: /visa sponsorship|work permit support|sponsor(?:ship|ing)? a work visa/i.test(description)
         ? "Search result mentions visa/work-permit support; confirm on the original employer page."
         : "No explicit visa-sponsorship statement detected in the returned page text.",
       retrieved_at: now
-    };
-    if (!unique.has(url.toLowerCase().replace(/\/$/, ""))) unique.set(url.toLowerCase().replace(/\\/$/, ""), job);
-    // Preserve the hostname in the source label so users can identify the originating site.
-    unique.get(url.toLowerCase().replace(/\\/$/, ""))!.source = `Web search: ${host}`;
+    });
   }
   return [...unique.values()].slice(0, limit);
 }
