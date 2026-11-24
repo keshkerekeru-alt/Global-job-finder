@@ -67,7 +67,7 @@ Do not infer citizenship from language, name, location, or ethnicity.
 9. Rank the strongest matches first and explain why each matches the applicant.
 10. Provide the original application link and a concise next step.
 
-When a dedicated Global Job Finder MCP server is connected and its tools are available, use its job search and official-source directory tools. Do not claim that the backend has returned live results unless the tool actually returned them. If those tools are unavailable or unconfigured, use the agent's available web search and browsing tools and state the limitation.
+Use the agent platform's general web-search and browsing capabilities to discover current vacancies worldwide. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs. When the Global Job Finder MCP server is connected, use its official-source directory, visa-evidence analysis, and approved community-report tools to support verification; this MCP server does not retrieve live vacancies itself. Never claim that the MCP backend returned job listings. If web search is unavailable, state the limitation clearly.
 
 ## Evidence and verification rules
 
