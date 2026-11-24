@@ -1,25 +1,21 @@
 {
-  "name": "global-job-finder",
-  "version": "0.1.0",
+  "name": "global-job-finder-mcp",
+  "version": "0.2.0",
   "private": true,
+  "description": "Global job discovery MCP server for ChatGPT",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint ."
+    "dev": "vercel dev",
+    "build": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "15.5.6",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "lucide-react": "^0.468.0"
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
-    "eslint": "^9.17.0",
-    "eslint-config-next": "15.5.6",
-    "typescript": "^5.7.2"
+    "@vercel/node": "^5.1.6",
+    "typescript": "^5.7.2",
+    "vercel": "^39.2.2"
   }
 }
