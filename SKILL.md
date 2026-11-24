@@ -69,24 +69,30 @@ Do not infer citizenship from language, name, location, or ethnicity.
 
 Use the agent platform's general web-search and browsing capabilities to discover current vacancies worldwide. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs. Live vacancy discovery must work without the optional Global Job Finder MCP server. If that MCP server is connected, use it only for its official-source directory, visa-evidence analysis, and approved community-report tools; it does not retrieve live vacancies. The MCP server is optional, is not hosted by Agensi, and requires a separately configured endpoint. Never claim that the MCP backend returned job listings. If web search is unavailable, state the limitation clearly.
 
-## Batch search: return up to 15 vacancies in one run
+## Global, multi-user product and shared data center
 
-When the applicant asks for 15 jobs, treat 15 as the target result count for a single completed search, not as a reason to stop after the first few search results.
+This skill is for the general public worldwide. Never hard-code the creator's personal nationality, residence, occupation, qualifications, preferred countries, language, or job-search filters as product defaults. Treat every user as a separate applicant and use only that user's stated or consented profile.
 
-1. Build a search matrix before searching. For the target country, prepare at least 8 distinct query variants covering:
-   - local-language and English job titles;
-   - at least 4 relevant role families that match the applicant (for example production, warehouse/logistics, cleaning/facility services, hospitality, construction support, agriculture where legally viable);
-   - synonyms such as helper, assistant, operative, packer, loader, cleaner, kitchen assistant, and entry-level;
-   - phrases for applicants from abroad, relocation, visa, work permit, and international recruitment.
-2. Search in batches across multiple independent source groups: official public employment services, government portals intended for foreign applicants, EURES where relevant, employer career pages, and reputable job boards as discovery sources. Do not rely on one portal or one query.
-3. Inspect multiple result pages or pagination where available. Search at least 3 source groups and 8 query variants before concluding that the target cannot be reached. Continue with new role-title synonyms, regions, and employer career pages when fewer than 15 eligible results have been verified.
-4. Collect a candidate pool larger than the requested output (normally 25–40 candidates), then open and validate each original vacancy page. Deduplicate by employer + job title + location + vacancy URL. Remove expired, closed, duplicated, vague, and unverifiable listings.
-5. Apply the applicant's stated filters consistently. If the applicant prefers jobs without formal qualifications, prioritize vacancies that explicitly say no formal qualification is required or accept entry-level applicants. Do not silently treat a mandatory certificate, licence, apprenticeship, or recognized vocational qualification as optional.
-6. Keep vacancy suitability and immigration eligibility as separate assessments. Do not discard a genuine vacancy solely because sponsorship is not stated; include it only if it otherwise matches the requested search, label visa support precisely, and clearly separate confirmed, unclear, and unsupported cases. Never imply that a job listing proves the employer will sponsor a visa.
-7. Return up to the requested number (maximum 15 when the user has set a 15-employer daily limit) in one consolidated answer. Aim to fill all 15 with distinct, current, source-verified vacancies. If fewer than 15 survive after the required search coverage, return the verified number and state exactly how many were found, which source groups and query families were checked, and the concrete reason the remaining slots could not be filled. Never invent or lower verification standards just to reach 15.
-8. Before presenting the batch, run a final quality pass: verify the live vacancy link, employer identity, location, date/freshness, requirements, application route, pay/conditions where available, and work-authorization evidence. Show the date checked and mark missing facts as "Not stated" rather than guessing.
+Personalize each search to the current user's citizenship, residence, target countries, skills, experience, education, languages, work authorization needs, and preferences. Ask only for essential missing details. A user-specific limit such as "show 15 jobs" applies only to that request or saved user preference; it is not a universal product rule. If the user requests 15, aim to return 15 verified, distinct vacancies in one consolidated response, but never fabricate results or weaken verification to fill the count.
 
-For batch requests, structure the output as one numbered list or compact table with up to 15 separate vacancies. Include columns/fields for employer, job title, location, pay, requirements, official vacancy link, application route, international-applicant evidence, visa/work-permit status, and verification date. Do not split the result into multiple rounds unless the user asks for continuation.
+The product must use one shared central data catalog for all users:
+- **Shared source registry:** official public employment services, government job portals, regional job networks, employer career pages, and vetted recruitment sources. Store country/region, source type, URL, language, verification status, and last-checked date.
+- **Shared vacancy catalog:** verified vacancy records with canonical source URL, employer, title, location, employment type, pay, requirements, publication/closing dates, vacancy status, international-applicant evidence, visa/work-permit evidence, and last-checked date.
+- **Source-check history:** store when a source was checked, whether access succeeded, and how many vacancies were discovered and verified.
+- **Shared community evidence:** approved, redacted reports about applicant experiences and employer restrictions, clearly separated from official employer policy.
+
+All users may benefit from the same approved shared sources and vacancy records. Never place one user's private profile, CV, contact details, application history, or personal documents in the shared catalog. Do not expose contributor identities or private evidence. Use server-side database access; never expose service-role credentials to clients.
+
+Search workflow:
+1. Read the shared source registry and cached vacancy catalog for the user's target country/occupation.
+2. Re-check cached vacancies against their original sources before presenting them as current. A database record is a research lead, not proof that a vacancy remains open.
+3. Search for fresh vacancies using the connected agent platform's web search and browsing. Search official sources first, then reputable discovery sources.
+4. Verify the exact original vacancy page and current details. Do not store unverified aggregator snippets as verified vacancies.
+5. Save only source-verified vacancy records and source-check metadata to the shared database using the approved server tools. Upsert by canonical URL to avoid duplicates; update the last-checked date and changed facts.
+6. Return results filtered to the current user's profile, while preserving the shared global catalog for future users.
+7. Apply any requested result count to this search only. Use enough distinct queries and source groups for broad coverage, but report fewer results when the evidence does not support the requested count.
+
+The shared catalog is global and multi-user; the applicant profile and matching/ranking are per-user. Do not treat the creator's profile or a previous user's search as the default for another user.
 
 ## Evidence and verification rules
 
@@ -163,16 +169,18 @@ Do not estimate take-home pay unless the user asks and enough tax and location i
 
 Rank results by:
 1. The vacancy is current and verified on an official source.
-2. The applicant is eligible to apply from their current country.
+2. The applicant is legally eligible to apply from their current country, or a realistic legal route exists.
 3. The employer's work-authorization position is explicit and compatible with the applicant.
-4. The role matches the applicant's skills and experience.
+4. The role matches the current applicant's skills and preferences.
 5. Pay and working conditions are transparent.
 6. The employer and any intermediary are verifiable.
 7. The application route is direct and clear.
 
 Do not rank an unverified high-salary listing above a verified suitable vacancy merely because the advertised pay is larger.
 
-If the user sets a maximum number of employers or applications, respect it. Do not contact any employer unless explicitly instructed. Do not repeat employers already contacted when that history is available.
+If the user requests a specific number of vacancies, search broadly enough to try to meet it in one consolidated response. Use multiple relevant source groups and search-query variants, inspect pagination where available, and deduplicate against the shared catalog. Return the requested number only when that many distinct vacancies pass verification. If fewer survive, report the exact count and explain the gap; never invent vacancies or weaken verification. Any daily or per-country cap is user-specific, not a universal product default.
+
+Do not contact any employer unless explicitly instructed. Do not repeat employers already contacted by the same user when that history is available. Do not share one user's contact/application history with other users.
 
 ## Applications and communication
 
