@@ -84,7 +84,7 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
   const searchCountries = countries.length
     ? countries
     : ["United Kingdom", "United States", "Canada", "Australia", "Germany"];
-  const countryCodes = searchCountries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 5);
+  const countryCodes = searchCountries.map(name => ADZUNA_COUNTRIES[normalizeCountry(name)]).filter(Boolean).slice(0, 8);
   if (!countryCodes.length) return [];
   const groups = await Promise.all(countryCodes.map(async code => {
     const params = new URLSearchParams({
@@ -110,7 +110,7 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
 async function searchJooble(input: JobSearchInput, countries: string[], limit: number): Promise<GlobalJob[]> {
   const key = process.env.JOOBLE_API_KEY;
   if (!key) return [];
-  const locations = countries.length ? countries.slice(0, 5) : [input.location ?? ""];
+  const locations = countries.length ? countries.slice(0, 8) : [input.location ?? ""];
   const groups = await Promise.all(locations.map(async location => {
     const response = await fetch(`https://jooble.org/api/${encodeURIComponent(key)}`, {
       method: "POST",
