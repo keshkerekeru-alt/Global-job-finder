@@ -1,6 +1,7 @@
 export type JobSearchInput = {
   keywords: string;
   countries?: string[];
+  origin_country?: string;
   location?: string;
   category?: string;
   employment_type?: string;
