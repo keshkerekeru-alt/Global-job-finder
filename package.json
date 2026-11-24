@@ -1,22 +1,7 @@
 {
-  "name": "global-job-finder-mcp",
-  "version": "0.2.0",
+  "name": "global-job-finder",
+  "version": "3.0.0",
   "private": true,
-  "description": "Global job discovery MCP server for ChatGPT",
-  "scripts": {
-    "dev": "vercel dev",
-    "build": "tsc --noEmit",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.25.2",
-    "zod": "^3.24.1"
-  },
-  "devDependencies": {
-    "@types/node": "^22.10.2",
-    "@vercel/node": "^5.1.6",
-    "typescript": "^5.7.2",
-    "vercel": "^39.2.2"
-  },
-  "type": "module"
+  "description": "Skill-only worldwide job-search assistant instructions",
+  "license": "UNLICENSED"
 }
