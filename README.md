@@ -22,7 +22,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - **MCP server:** TypeScript + Model Context Protocol SDK.
 - **Hosting:** Vercel serverless endpoint at `/api/mcp`.
 - **Search providers:** Adzuna, Jooble, and Tavily-powered general web search.
-- **Database:** Supabase is planned for saved jobs, provider cache, user preferences, and deduplication.
+- **Database:** Supabase is connected for moderated community reports; saved jobs, provider cache, user preferences, and deduplication are future work.
 
 ## Current implementation status
 
@@ -33,7 +33,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [ ] Configure provider API credentials and validate live searches.
 - [x] Add Tavily general web discovery alongside Adzuna and Jooble, including a second discovery query for official employer career pages, public employment services and EURES (live credentials and result validation still required).
 - [x] Add moderated applicant-experience and country-restriction reporting/search MCP tools.
-- [ ] Create/connect Supabase and apply both SQL migrations; moderation workflow and live database verification remain outstanding.
+- [x] Create Supabase project and apply both community-report SQL migrations; both tables and RLS are verified. Server-side service-role credential and moderation workflow are still outstanding.
 - [ ] Add caching, rate limits, and abuse controls.
 - [ ] Add and validate more country-specific official sources and direct employer career-page extraction.
 - [ ] Add automated tests and operational monitoring.
@@ -46,7 +46,7 @@ Until provider API credentials are configured, live search results are not avail
 
 General web discovery is implemented through Tavily alongside Adzuna and Jooble. It runs broad job discovery and a separate query targeting official employer career pages, public employment services, government job portals and EURES. Search snippets/raw page text are discovery evidence only; users must open and verify the original vacancy page. Configure `TAVILY_API_KEY` to enable it.
 
-Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. The database migration still needs to be applied and the Supabase connection configured before this works live.
+Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. Both database tables and migrations are now applied in Supabase. Add `SUPABASE_SERVICE_ROLE_KEY` to Vercel before community reporting works live; moderation and public-read safeguards must be completed before reports are exposed.
 
 See [Web Search and Community Reports requirements](docs/WEB-SEARCH-AND-COMMUNITY-REPORTS.md).
 
