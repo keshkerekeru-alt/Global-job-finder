@@ -39,6 +39,8 @@ Preserve original source links and check dates. Never invent vacancies or claim 
 ## MCP tools
 
 - `list_official_job_sources` — reads the shared database of national public employment services, government job portals, and regional networks.
+- `save_verified_source` — adds a verified source to the shared registry for all users.
+- `record_source_check` — records source-check outcomes and counts in the shared history.
 - `search_shared_vacancies` — searches the shared cache of previously verified vacancy records; fresh verification is still required.
 - `save_verified_vacancy` — stores or updates a vacancy only after the original source has been verified; canonical URL prevents duplicates.
 - `analyze_visa_evidence` — classifies wording in supplied vacancy text; it is not legal advice or a sponsorship guarantee.
@@ -58,7 +60,7 @@ Configure these server-side values in Vercel Project Settings → Environment Va
 | `SUPABASE_URL` | Supabase project URL for community reports |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase credential; never expose to clients |
 
-The MCP server can start without job-board API keys because it does not call job-board APIs. Community-report functionality requires valid server-side Supabase configuration and appropriate database policies.
+The MCP server can start without job-board API keys because it does not call job-board APIs. Shared source and vacancy catalog functionality requires valid server-side Supabase configuration. The server-side service-role credential is never exposed to users.
 
 ## Current implementation status
 
@@ -70,7 +72,10 @@ The MCP server can start without job-board API keys because it does not call job
 - [x] Community experience and employer-country restriction tools.
 - [x] Supabase community-report tables and migrations applied.
 - [x] Shared global source registry, vacancy catalog, and source-check history tables created.
-- [ ] Connect MCP source/vacancy tools to the new shared tables and seed/maintain source coverage worldwide.
+- [x] Shared catalog MCP read/write tools added; new verified sources and vacancies can be reused by all users.
+- [x] Connect MCP source registry, verified-vacancy cache, and source-check tools to shared Supabase tables.
+- [x] Seed the initial official-source registry (26 sources covering 25 countries/regions).
+- [ ] Expand and continuously verify official-source coverage for the remaining countries worldwide.
 - [ ] Configure and verify the server-side Supabase service-role credential in Vercel.
 - [ ] Complete moderation workflow, rate limits, abuse controls, and report correction/deletion.
 - [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
