@@ -3,13 +3,21 @@ import { searchProviders } from "./providers.js";
 import { searchRestrictionReports } from "./experiences.js";
 
 export async function searchGlobalJobs(input: JobSearchInput) {
-  const [result, community] = await Promise.all([
+  const [result, communityByCountry] = await Promise.all([
     searchProviders(input),
-    searchRestrictionReports(input.origin_country, (input.countries ?? []).join(",") || undefined).catch(() => ({
-      reports: [], count: 0,
-      note: "Community restriction reports are currently unavailable; vacancy search can continue without them."
-    }))
+    Promise.all((input.countries?.length ? input.countries : [undefined]).map(country =>
+      searchRestrictionReports(input.origin_country, country).catch(() => ({
+        reports: [], count: 0,
+        note: "Community restriction reports are currently unavailable; vacancy search can continue without them."
+      }))
+    ))
   ]);
+  const reportMap = new Map<string, (typeof communityByCountry)[number]["reports"][number]>();
+  for (const group of communityByCountry) for (const report of group.reports) reportMap.set(String(report.id), report);
+  const communityReports = [...reportMap.values()];
+  const communityNote = communityByCountry.every(group => group.count === 0) && communityByCountry.some(group => group.note.includes("unavailable"))
+    ? "Community restriction reports are currently unavailable; vacancy search can continue without them."
+    : "Approved, redacted community reports are shown as dated signals only. A single report is not a universal employer policy.";
   const notice = result.jobs.length
     ? `Found ${result.jobs.length} job listings from ${result.providers.join(" and ")}. Check original source pages. Visa wording is evidence only, not a sponsorship guarantee.`
     : result.configured
@@ -26,7 +34,7 @@ export async function searchGlobalJobs(input: JobSearchInput) {
     providers_used: result.providers,
     providers_configured: result.configured,
     notice,
-    community_reports: community.reports,
-    community_note: community.note
+    community_reports: communityReports,
+    community_note: communityNote
   };
 }
