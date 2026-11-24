@@ -59,7 +59,7 @@ const ALIASES: Record<string, string> = {
   "great britain": "united kingdom",
   usa: "united states",
   us: "united states",
-  holland: "netherlands,
+  holland: "netherlands",
   "the netherlands": "netherlands",
   "czech republic": "czechia"
 };
