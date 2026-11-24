@@ -144,6 +144,10 @@ export async function searchProviders(input: JobSearchInput) {
   if (process.env.JOOBLE_API_KEY) {
     tasks.push({ name: "Jooble", run: () => searchJooble(input, countries, limit) });
   }
+  if (process.env.TAVILY_API_KEY) {
+    const { searchWebJobs } = await import("./web-search.js");
+    tasks.push({ name: "Web search (Tavily)", run: () => searchWebJobs(input, limit) });
+  }
 
   const settled = await Promise.allSettled(tasks.map(task => task.run()));
   settled.forEach((item, index) => {
