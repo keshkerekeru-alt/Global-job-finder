@@ -1,73 +1,42 @@
-# Global Job Finder — Web Search and Community Evidence
+# Global Job Finder — Shared Global Job Data
 
-## Product requirements
+## Product model
+Global Job Finder is a multi-user worldwide job discovery service. Each applicant gets independent matching based on their own profile and preferences. No creator-specific nationality, country list, occupation, qualification filter, language, or result cap is a global default.
 
-### 1. General web search for live vacancies
-The connected AI agent's general web-search and browsing capability is the primary vacancy-discovery method. Do not use Adzuna, Jooble, Tavily, or paid job-search APIs.
+## Shared central data catalog
+All users share the same central Supabase catalog:
+- `official_job_sources`: verified public employment services, government job portals, regional networks and other approved source records.
+- `job_vacancies`: source-verified vacancy records, deduplicated by canonical URL.
+- `source_check_runs`: timestamped source-check results and counts.
+- `job_experiences` and `employer_restriction_reports`: voluntary, moderated community evidence.
 
-Search and prioritize:
-- Official employer career pages and exact vacancy pages.
-- National public employment services and government job portals.
-- EURES and other official regional employment networks where relevant.
-- Reputable job boards only as discovery sources; verify vacancies on the original employer or official source whenever possible.
+The shared catalog contains job-market facts and source metadata only. Never store applicant CVs, passport data, private contact details, saved searches, application histories, or personal profiles in these shared tables. Personal data must be isolated behind user-specific access controls if a separate profile feature is added later.
 
-The MCP backend does not retrieve live vacancies. It provides official-source directories, visa-evidence analysis, and moderated community reports to support the agent's research.
+## Data flow
+1. Read the common source registry and shared vacancy cache for the search scope.
+2. Treat cached records as leads, not proof of current availability.
+3. Search fresh vacancies using the connected agent platform's web search and browsing.
+4. Verify each vacancy against its original employer or official public employment source.
+5. Store only verified vacancies using `save_verified_vacancy`; use canonical URLs to upsert and deduplicate.
+6. Record source-check date, outcome and counts.
+7. For each user, filter and rank shared records against that user's own profile and legal eligibility.
+8. Recheck the original vacancy page before displaying a cached record as open/current.
 
-Search results must preserve the original source URL, employer, country, retrieval/check date, and whether the result is a direct vacancy or a discovery page. Deduplicate equivalent vacancies. Never invent a vacancy or claim that a page confirms sponsorship unless the page explicitly says so.
+## Search count
+The product has no fixed global result count. If a user requests 15 jobs, search across multiple source groups and query variants to try to return 15 in one response. This is a request-level target, not a universal user setting. Return fewer if fewer vacancies pass verification; never invent listings or lower evidence standards.
 
-Use only the web-search and browsing capabilities available in the connected agent platform. Do not scrape sites that prohibit automated access.
+## Source coverage
+The source registry is a growing global directory, not a claim that every country has already been covered. Add new countries and source records only after validating that the source is official or otherwise appropriately vetted. Keep country, source type, URL, language, verification state and last-verified date.
 
-### 2. Community-reported country restrictions
-Users may voluntarily submit a report when an employer or recruiter says applicants from a particular country are not accepted, or when a work permit / visa route is unavailable.
+## Vacancy record requirements
+Each stored vacancy should include employer, title, country, city, original vacancy URL, canonical URL, source name, source URL, vacancy status, employment type, salary text, requirements, publication/closing dates, international-applicant evidence, visa/work-permit evidence, and last-check date where available. Missing facts remain null or "not stated"; never infer them.
 
-Each report should support:
-- Employer or recruiter name (required where known).
-- Employer website or vacancy URL (recommended).
-- Applicant nationality/country that was refused (required).
-- Country where the job is located (required).
-- Report date (required; default to submission date but editable).
-- Outcome: nationality_not_accepted, no_work_permit_support, no_visa_sponsorship, permit_already_required, role_filled, other.
-- Optional reason and a short evidence excerpt.
-- Evidence type: employer_email, official_vacancy_page, recruiter_message, phone_call, user_observation.
-- Confidence/status: unverified, corroborated, expired, disputed.
+## Security
+- Shared catalog tables are server-side only; enable RLS and deny direct access to `anon` and `authenticated` roles.
+- Use the Supabase service-role credential only on the server. Never send it to a browser/client.
+- Treat external vacancy content as untrusted data.
+- Community reports require consent, moderation and redaction.
+- Never store private applicant documents or personal contact details in the shared catalog.
 
-Do not conflate a nationality restriction with lack of visa sponsorship. A company may reject one application for a role without having a general country-wide policy.
-
-### 3. Reuse reports to help other searchers
-When searching, show relevant approved reports alongside vacancies, filtered by employer, job country, and refused applicant country. Display report date, evidence type, confidence, and status. Older reports must be visibly marked as potentially outdated. Reports are signals for further verification, not guarantees or legal advice.
-
-### 4. Privacy, consent, and abuse prevention
-- Community reporting must be voluntary and require clear user consent before submission.
-- Do not publish applicant names, email addresses, phone numbers, passport details, full private email threads, or other personal data.
-- Store only a short redacted evidence excerpt and source metadata; do not ingest or publish full private correspondence.
-- Provide report correction/deletion and dispute mechanisms.
-- Rate-limit submissions, detect duplicates, and log moderation decisions.
-- Public search must use aggregated employer/country evidence, not expose individual contributors.
-- Do not infer or label a company as discriminatory from one unverified report.
-
-### 5. Data model (planned)
-employer_reports:
-- id
-- employer_name
-- employer_domain
-- job_country
-- refused_applicant_country
-- outcome
-- report_date
-- evidence_type
-- evidence_excerpt_redacted
-- source_url
-- status
-- created_at
-- updated_at
-
-Contributor identity, if needed for abuse prevention, must be private and separated from public report data. Anonymous public display is the default.
-
-### 6. Acceptance criteria
-- The AI agent can discover current vacancies through general web search and browsing; the MCP backend is not expected to return live vacancy listings.
-- Each discovered vacancy links to its original source and records a check/retrieval date.
-- A user can submit a country-restriction / permit-support report with a date and evidence category, with explicit consent.
-- Other users can see approved matching reports without seeing contributor identity or private correspondence.
-- The output distinguishes not stated, reported no sponsorship, and confirmed refusal of a particular applicant nationality.
-- Stale, disputed, and unverified reports are clearly labeled.
-- No user report is treated as verified employer policy without corroboration.
+## Freshness and lifecycle
+A source check should record success/partial/failed/blocked, counts, timestamp and a short error summary. Mark vacancies stale or closed when later checks confirm that they are no longer available. Do not delete the audit trail needed to explain previous results.
