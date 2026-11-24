@@ -4,54 +4,45 @@ export async function searchWebJobs(input: JobSearchInput, limit: number): Promi
   const key = process.env.TAVILY_API_KEY;
   if (!key) return [];
   const destinations = (input.countries ?? []).join(", ");
-  const query = [
-    input.keywords,
-    input.category,
-    "jobs vacancies careers",
-    destinations,
-    input.location,
+  const baseTerms = [
+    input.keywords, input.category, destinations, input.location,
     input.visa_sponsorship === "required" ? '"visa sponsorship" OR "work permit support"' : ""
   ].filter(Boolean).join(" ");
-
-  const response = await fetch("https://api.tavily.com/search", {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${key}`,
-      "content-type": "application/json",
-      accept: "application/json"
-    },
-    body: JSON.stringify({
-      query,
-      topic: "general",
-      search_depth: "advanced",
-      max_results: Math.min(limit, 20),
-      include_answer: false,
-      include_raw_content: false
-    }),
-    signal: AbortSignal.timeout(15000)
-  });
-  if (!response.ok) throw new Error(`Web search: HTTP ${response.status}`);
-  const data = await response.json() as { results?: Array<{ title?: string; url?: string; content?: string; score?: number }> };
+  // Run broad discovery and official-source discovery in parallel so APIs are not the only source.
+  const queries = [
+    `${baseTerms} jobs vacancies careers`,
+    `${baseTerms} official employer careers job vacancies public employment service EURES government job portal`
+  ];
+  const responses = await Promise.all(queries.map(async query => {
+    const response = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: { authorization: `Bearer ${key}`, "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ query, topic: "general", search_depth: "advanced", max_results: Math.min(limit, 20), include_answer: false, include_raw_content: true }),
+      signal: AbortSignal.timeout(18000)
+    });
+    if (!response.ok) throw new Error(`Web search: HTTP ${response.status}`);
+    return response.json() as Promise<{ results?: Array<{ title?: string; url?: string; content?: string; raw_content?: string }> }>;
+  }));
   const now = new Date().toISOString();
-  return (data.results ?? []).flatMap((item, index) => {
+  const unique = new Map<string, GlobalJob>();
+  for (const response of responses) for (const item of response.results ?? []) {
     const url = String(item.url ?? "");
-    if (!/^https?:\/\//i.test(url)) return [];
-    const description = String(item.content ?? "").slice(0, 1800);
-    return [{
-      id: `web:${url}`,
-      title: String(item.title ?? "Web search result"),
-      employer: "See source",
-      country: destinations || "Not specified",
-      location: input.location ?? destinations ?? "Not specified",
-      url,
-      source: "Web search",
-      description,
-      salary: "",
-      employment_type: "Not stated",
+    if (!/^https?:\\/\\//i.test(url)) continue;
+    const description = String(item.raw_content || item.content || "").slice(0, 1800);
+    const host = new URL(url).hostname.replace(/^www\\./, "");
+    const job: GlobalJob = {
+      id: `web:${url}`, title: String(item.title ?? "Web search result"),
+      employer: "See source", country: destinations || "Not specified",
+      location: input.location || destinations || "Not specified", url,
+      source: "General web search", description, salary: "", employment_type: "Not stated",
       visa_evidence: /visa sponsorship|work permit support|sponsor(?:ship|ing)? a work visa/i.test(description)
-        ? "Search snippet mentions visa/work-permit support; verify on the original page."
-        : "No explicit visa-sponsorship statement detected in the search snippet.",
+        ? "Search result mentions visa/work-permit support; confirm on the original employer page."
+        : "No explicit visa-sponsorship statement detected in the returned page text.",
       retrieved_at: now
-    } satisfies GlobalJob];
-  });
+    };
+    if (!unique.has(url.toLowerCase().replace(/\\/$/, ""))) unique.set(url.toLowerCase().replace(/\\/$/, ""), job);
+    // Preserve the hostname in the source label so users can identify the originating site.
+    unique.get(url.toLowerCase().replace(/\\/$/, ""))!.source = `Web search: ${host}`;
+  }
+  return [...unique.values()].slice(0, limit);
 }
