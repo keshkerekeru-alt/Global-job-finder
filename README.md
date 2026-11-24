@@ -31,10 +31,11 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [x] Provider adapter structure for Adzuna and Jooble.
 - [x] Explicit visa-evidence classification (no unsupported visa promises).
 - [ ] Configure provider API credentials and validate live searches.
-- [x] Add moderated community experience-report schema and MCP tools (database connection still required).
-- [ ] Connect Supabase and apply the migration.
+- [x] Add Tavily general web discovery alongside Adzuna and Jooble, including a second discovery query for official employer career pages, public employment services and EURES (live credentials and result validation still required).
+- [x] Add moderated applicant-experience and country-restriction reporting/search MCP tools.
+- [ ] Create/connect Supabase and apply both SQL migrations; moderation workflow and live database verification remain outstanding.
 - [ ] Add caching, rate limits, and abuse controls.
-- [ ] Add more official and country-specific job sources.
+- [ ] Add and validate more country-specific official sources and direct employer career-page extraction.
 - [ ] Add automated tests and operational monitoring.
 - [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
 - [ ] Complete ChatGPT plugin review and publication requirements.
@@ -43,11 +44,11 @@ Until provider API credentials are configured, live search results are not avail
 
 ## Planned global discovery and community intelligence
 
-The long-term search design combines job-provider APIs (Adzuna and Jooble) with general web search, official employer career pages, public employment portals, and country-specific services such as EURES. Web discovery results must be validated against their original source and deduplicated.
+General web discovery is implemented through Tavily alongside Adzuna and Jooble. It runs broad job discovery and a separate query targeting official employer career pages, public employment services, government job portals and EURES. Search snippets/raw page text are discovery evidence only; users must open and verify the original vacancy page. Configure `TAVILY_API_KEY` to enable it.
 
-A voluntary community-reporting feature is also specified. Users can record a dated report that an employer rejected applicants from a particular country, does not support a work permit, or does not offer visa sponsorship. Reports will be shown to other searchers with evidence type, date, and verification status. These outcomes remain separate; one report must not be treated as a universal employer policy. Public reports must not expose contributors' identities or private correspondence.
+Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. The database migration still needs to be applied and the Supabase connection configured before this works live.
 
-See [Web Search and Community Reports requirements](docs/WEB-SEARCH-AND-COMMUNITY-REPORTS.md). This is a product specification; the web-search integrations and community database are not yet implemented.
+See [Web Search and Community Reports requirements](docs/WEB-SEARCH-AND-COMMUNITY-REPORTS.md).
 
 ## Tools exposed to ChatGPT
 
