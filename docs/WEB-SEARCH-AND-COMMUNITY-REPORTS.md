@@ -5,13 +5,13 @@
 ### 1. Search beyond job APIs
 The primary search experience must combine:
 - Job-provider APIs (initially Adzuna and Jooble).
-- General web-search providers for discovering current vacancy pages.
+- Compliant direct discovery from official employer career pages and public vacancy feeds.
 - Official employer career pages and public employment portals.
 - Country-specific public job services, including EURES where relevant.
 
 Search results must preserve the original source URL, employer, country, retrieval timestamp, and whether the result is a direct vacancy or a discovery page. Deduplicate equivalent vacancies. Never invent a vacancy or claim that a page confirms sponsorship unless the page explicitly says so.
 
-General web search is a discovery layer, not a substitute for opening and validating the employer's official vacancy page. Web-search provider credentials must be configured as server-side environment variables and never exposed to clients.
+ChatGPT's built-in Web Search may be used separately during ChatGPT conversations, but it is not an API that this MCP backend can call. The backend must use permitted public feeds, official vacancy pages, and other compliant direct integrations; do not scrape sites that prohibit automated access.
 
 ### 2. Community-reported country restrictions
 Users may voluntarily submit a report when an employer or recruiter says applicants from a particular country are not accepted, or when a work permit / visa route is unavailable.
