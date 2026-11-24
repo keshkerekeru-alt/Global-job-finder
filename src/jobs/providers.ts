@@ -108,25 +108,55 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
   return groups.flat();
 }
 
+const JOOBLE_DOMAINS: Record<string, string> = {
+  au: "au", at: "at", be: "be", ca: "ca", de: "de", fr: "fr", ie: "ie",
+  it: "it", nl: "nl", nz: "nz", pl: "pl", sg: "sg", za: "za", es: "es",
+  se: "se", ch: "ch", gb: "uk", us: ""
+};
+
+function joobleKeys(): Record<string, string> {
+  const raw = process.env.JOOBLE_API_KEYS;
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      return Object.fromEntries(Object.entries(parsed)
+        .filter(([country, key]) => /^[a-z]{2}$/i.test(country) && typeof key === "string" && key.trim())
+        .map(([country, key]) => [country.toLowerCase(), String(key).trim()]));
+    } catch {
+      return {};
+    }
+  }
+  // Backward compatibility: the unqualified key is the Jooble US key only.
+  return process.env.JOOBLE_API_KEY ? { us: process.env.JOOBLE_API_KEY } : {};
+}
+
 async function searchJooble(input: JobSearchInput, countries: string[], limit: number): Promise<GlobalJob[]> {
-  const key = process.env.JOOBLE_API_KEY;
-  if (!key) return [];
-  const locations = countries.length ? countries.slice(0, 8) : [input.location ?? ""];
-  const groups = await Promise.all(locations.map(async location => {
-    const response = await fetch(`https://jooble.org/api/${encodeURIComponent(key)}`, {
+  const keys = joobleKeys();
+  const requested = countries.length ? countries : [input.location ?? "United States"];
+  const targets = requested.map(name => {
+    const code = ADZUNA_COUNTRIES[normalizeCountry(name)];
+    if (!code || !keys[code]) return null;
+    const domain = JOOBLE_DOMAINS[code];
+    if (domain === undefined) return null;
+    return { name, code, domain, key: keys[code] };
+  }).filter((item): item is { name: string; code: string; domain: string; key: string } => item !== null).slice(0, 8);
+
+  const groups = await Promise.all(targets.map(async target => {
+    const host = target.domain ? `${target.domain}.jooble.org` : "jooble.org";
+    const response = await fetch(`https://${host}/api/${encodeURIComponent(target.key)}`, {
       method: "POST",
       headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({
         keywords: [input.keywords, input.category].filter(Boolean).join(" "),
-        location,
+        location: input.location || target.name,
         page: input.page ?? 1,
         ResultOnPage: limit
       }),
       signal: AbortSignal.timeout(12000)
     });
-    if (!response.ok) throw new Error(`Jooble: HTTP ${response.status}`);
+    if (!response.ok) throw new Error(`Jooble ${target.code.toUpperCase()}: HTTP ${response.status}`);
     const data = await response.json() as { jobs?: any[] };
-    return (data.jobs ?? []).map(item => toJob(item, "Jooble", location)).filter(Boolean) as GlobalJob[];
+    return (data.jobs ?? []).map(item => toJob(item, "Jooble", target.name)).filter(Boolean) as GlobalJob[];
   }));
   return groups.flat();
 }
