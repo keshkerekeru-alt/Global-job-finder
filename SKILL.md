@@ -77,22 +77,22 @@ Personalize each search to the current user's citizenship, residence, target cou
 
 The product must use one shared central data catalog for all users:
 - **Shared source registry:** official public employment services, government job portals, regional job networks, employer career pages, and vetted recruitment sources. Store country/region, source type, URL, language, verification status, and last-checked date.
-- **Shared vacancy catalog:** verified vacancy records with canonical source URL, employer, title, location, employment type, pay, requirements, publication/closing dates, vacancy status, international-applicant evidence, visa/work-permit evidence, and last-checked date.
+- **Shared company directory:** company and recruitment-agency records with normalized names, country, role/sector summaries, official/reference URLs, role-based contact routes where available, aliases, and explicit data-quality status. Notion imports remain unverified until checked against official sources.\n- **Shared vacancy catalog:** verified vacancy records with canonical source URL, employer, title, location, employment type, pay, requirements, publication/closing dates, vacancy status, international-applicant evidence, visa/work-permit evidence, and last-checked date.
 - **Source-check history:** store when a source was checked, whether access succeeded, and how many vacancies were discovered and verified.
 - **Shared community evidence:** approved, redacted reports about applicant experiences and employer restrictions, clearly separated from official employer policy.
 
 All users may benefit from the same approved shared sources and vacancy records. Never place one user's private profile, CV, contact details, application history, or personal documents in the shared catalog. Do not expose contributor identities or private evidence. Use server-side database access; never expose service-role credentials to clients.
 
 Search workflow:
-1. Read the shared source registry and cached vacancy catalog for the user's target country/occupation.
+1. Read the shared company directory, source registry, and cached vacancy catalog for the user's target country/occupation. Use indexed company search to retrieve likely employers quickly; treat imported records as leads, not verified current hiring or sponsorship.
 2. Re-check cached vacancies against their original sources before presenting them as current. A database record is a research lead, not proof that a vacancy remains open.
 3. Search for fresh vacancies using the connected agent platform's web search and browsing. Search official sources first, then reputable discovery sources.
 4. Verify the exact original vacancy page and current details. Do not store unverified aggregator snippets as verified vacancies.
-5. Save only source-verified vacancy records and source-check metadata to the shared database using the approved server tools. Upsert by canonical URL to avoid duplicates; update the last-checked date and changed facts.
+5. Save source-verified company facts and source-check metadata to the shared database using the approved server tools. Save vacancy records only after original-source verification. Upsert by canonical URL to avoid duplicates; update the last-checked date and changed facts.
 6. Return results filtered to the current user's profile, while preserving the shared global catalog for future users.
 7. Apply any requested result count to this search only. Use enough distinct queries and source groups for broad coverage, but report fewer results when the evidence does not support the requested count.
 
-The shared catalog is global and multi-user; the applicant profile and matching/ranking are per-user. Do not treat the creator's profile or a previous user's search as the default for another user.
+The shared company directory, source registry and vacancy catalog are global and multi-user; the applicant profile and matching/ranking are per-user. Do not treat the creator's profile or a previous user's search as the default for another user.
 
 ## Evidence and verification rules
 
