@@ -64,8 +64,8 @@ function toJob(raw: any, source: string, countryFallback = ""): GlobalJob | null
   return {
     id: source.toLowerCase() + ":" + (raw.id ?? url),
     title,
-    employer: String(raw.company?.display_name ?? raw.company ?? raw.employer ?? "Not provided"),
-    country: String(raw.location?.area?.[0] ?? raw.country ?? countryFallback),
+    employer: String(raw.company?.display_name ?? (typeof raw.company === "string" ? raw.company : raw.employer) ?? "Not provided"),
+    country: String(raw.country ?? countryFallback),
     location: String(location || countryFallback || "Not provided"),
     url,
     source,
@@ -101,7 +101,7 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
     });
     if (!response.ok) throw new Error(`Adzuna ${code}: HTTP ${response.status}`);
     const data = await response.json() as { results?: any[] };
-    return (data.results ?? []).map(item => toJob(item, "Adzuna", code.toUpperCase())).filter(Boolean) as GlobalJob[];
+    const countryName = searchCountries.find(name => ADZUNA_COUNTRIES[normalizeCountry(name)] === code) ?? code.toUpperCase();\n    return (data.results ?? []).map(item => toJob(item, "Adzuna", countryName)).filter(Boolean) as GlobalJob[];
   }));
   return groups.flat();
 }
