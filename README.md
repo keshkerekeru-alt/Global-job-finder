@@ -21,18 +21,17 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - **ChatGPT:** user-facing conversation and tool selection.
 - **MCP server:** TypeScript + Model Context Protocol SDK.
 - **Hosting:** Vercel serverless endpoint at `/api/mcp`.
-- **Search providers:** optional Adzuna and Jooble job-board APIs. ChatGPT web search is a separate capability and is not called from this MCP server.
+- **Live vacancy discovery:** performed by the connected AI agent's built-in web search, prioritizing official employer career pages and public employment services. This MCP server does not call Adzuna, Jooble, Tavily, or any paid job-search API.
 - **Database:** Supabase is connected for moderated community reports; saved jobs, provider cache, user preferences, and deduplication are future work.
 
 ## Current implementation status
 
 - [x] MCP server endpoint scaffold using Streamable HTTP.
 - [x] Global job-search tool schema.
-- [x] Provider adapter structure for Adzuna and Jooble.
+- [x] Removed Adzuna and Jooble provider integrations; live discovery is delegated to the agent platform's general web search.
 - [x] Explicit visa-evidence classification (no unsupported visa promises).
-- [ ] Configure provider API credentials and validate live searches.
 - [x] Add a curated directory of official public employment services, government job portals and EURES links.
-- [ ] Add live, compliant vacancy retrieval from official employer career pages and public employment services without depending on a paid search API.
+- [x] Documented the general web-search workflow: the agent searches official employer career pages and public employment services directly.
 - [x] Add moderated applicant-experience and country-restriction reporting/search MCP tools.
 - [x] Create Supabase project and apply both community-report SQL migrations; both tables and RLS are verified. Server-side service-role credential and moderation workflow are still outstanding.
 - [ ] Add caching, rate limits, and abuse controls.
@@ -41,21 +40,17 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
 - [ ] Complete ChatGPT plugin review and publication requirements.
 
-Until provider API credentials are configured, live search results are not available. Community reports also require the Supabase migration and server-side credentials. Reports remain private until moderated and approved. The MCP tool reports this clearly rather than fabricating vacancies.
+Live vacancy discovery is performed by the connected agent's web-search capability, not by this MCP backend. The MCP server supplies official-source links, visa-evidence analysis, and moderated community reports. Community reports require server-side Supabase credentials and remain private until moderated and approved.
 
 ## Planned global discovery and community intelligence
 
-General web search is not called from this MCP server: ChatGPT's built-in Web Search can be used separately in ChatGPT conversations, but it is not an API available to this backend. The server currently supports optional Adzuna and regional Jooble job-board adapters. Adzuna API access is free for evaluation, but ongoing use in a public product requires written permission/licensing under Adzuna terms. Jooble uses separate regional API keys. We will add compliant direct discovery from official employer career pages and public employment sources as a separate implementation.
+General web search is not called from this MCP server. The connected AI agent must use its built-in web-search capability to discover current vacancies, then use this MCP server to retrieve official public-employment portals, analyze visa wording, and consult approved community evidence. No Adzuna, Jooble, Tavily, or other paid job-search API is used.
 
 Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. Both database tables and migrations are now applied in Supabase. Add `SUPABASE_SERVICE_ROLE_KEY` to Vercel before community reporting works live; moderation and public-read safeguards must be completed before reports are exposed.
 
 See [Web Search and Community Reports requirements](docs/WEB-SEARCH-AND-COMMUNITY-REPORTS.md).
 
 ## Tools exposed to ChatGPT
-
-### `search_global_jobs`
-
-Searches by keyword, country, location, category, employment type, and optional visa-sponsorship preference. Results include provider/source information and direct vacancy links when available.
 
 ### `submit_job_experience`
 
@@ -83,14 +78,11 @@ Configure these in Vercel Project Settings → Environment Variables. Do not com
 
 | Variable | Purpose |
 |---|---|
-| `ADZUNA_APP_ID` | Adzuna API application ID |
-| `ADZUNA_APP_KEY` | Adzuna API key |
-| `JOOBLE_API_KEYS` | JSON object mapping Jooble country codes to regional API keys, e.g. `{"gb":"...","de":"...","nl":"..."}`. Each country requires its own key. The legacy `JOOBLE_API_KEY` is treated as US-only. |
 | `SUPABASE_URL` | Supabase project URL for community reports |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase secret key; never expose to clients |
 
 
-The server can start without provider keys. In that case, live job-board search returns a clear configuration notice and no fabricated jobs; the official-source directory remains available. ChatGPT Web Search remains separate from the plugin backend.
+The server starts without job-board API keys. It does not return live vacancies; use the connected agent's general web search for vacancy discovery and this MCP server for supporting verification tools.
 
 ## Local development
 
