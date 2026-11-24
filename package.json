@@ -17,5 +17,6 @@
     "@vercel/node": "^5.1.6",
     "typescript": "^5.7.2",
     "vercel": "^39.2.2"
-  }
+  },
+  "type": "module"
 }
