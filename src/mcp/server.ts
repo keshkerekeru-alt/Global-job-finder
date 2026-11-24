@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { searchGlobalJobs } from "../src/jobs/search.js";
-import { analyzeVisaEvidence } from "../src/jobs/visa-evidence.js";
+import { searchGlobalJobs } from "../jobs/search.js";
+import { analyzeVisaEvidence } from "../jobs/visa-evidence.js";
 
 export function createServer() {
   const server = new McpServer(
