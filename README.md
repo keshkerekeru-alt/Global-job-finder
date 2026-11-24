@@ -7,7 +7,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 ## What it is intended to do
 
 - Search for vacancies across countries, regions, and job categories.
-- Combine job-board APIs with general-purpose web search and deduplicate overlapping listings.
+- Combine configured job-board APIs and deduplicate overlapping listings.
 - Search employer career pages and public vacancy sources, not only job aggregators.
 - Collect applicant-reported outcomes by origin country, destination country, and employer; publish reports only after moderation.
 - Return the original employer or vacancy URL wherever available.
@@ -21,7 +21,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - **ChatGPT:** user-facing conversation and tool selection.
 - **MCP server:** TypeScript + Model Context Protocol SDK.
 - **Hosting:** Vercel serverless endpoint at `/api/mcp`.
-- **Search providers:** Adzuna, Jooble, and Tavily-powered general web search.
+- **Search providers:** optional Adzuna and Jooble job-board APIs. ChatGPT web search is a separate capability and is not called from this MCP server.
 - **Database:** Supabase is connected for moderated community reports; saved jobs, provider cache, user preferences, and deduplication are future work.
 
 ## Current implementation status
@@ -31,7 +31,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [x] Provider adapter structure for Adzuna and Jooble.
 - [x] Explicit visa-evidence classification (no unsupported visa promises).
 - [ ] Configure provider API credentials and validate live searches.
-- [x] Add Tavily general web discovery alongside Adzuna and Jooble, including a second discovery query for official employer career pages, public employment services and EURES (live credentials and result validation still required).
+- [ ] Add compliant discovery from official employer career pages, public employment services and EURES without depending on a paid search API.
 - [x] Add moderated applicant-experience and country-restriction reporting/search MCP tools.
 - [x] Create Supabase project and apply both community-report SQL migrations; both tables and RLS are verified. Server-side service-role credential and moderation workflow are still outstanding.
 - [ ] Add caching, rate limits, and abuse controls.
@@ -44,7 +44,7 @@ Until provider API credentials are configured, live search results are not avail
 
 ## Planned global discovery and community intelligence
 
-General web discovery is implemented through Tavily alongside Adzuna and Jooble. Tavily uses the free monthly credit balance and stops working when credits are exhausted unless a paid option is explicitly enabled. Jooble uses separate regional API keys. Adzuna API access is free for evaluation, but ongoing use in a public product requires written permission/licensing under Adzuna terms. It runs broad job discovery and a separate query targeting official employer career pages, public employment services, government job portals and EURES. Search snippets/raw page text are discovery evidence only; users must open and verify the original vacancy page. Configure `TAVILY_API_KEY` to enable it.
+General web search is not called from this MCP server: ChatGPT's built-in Web Search can be used separately in ChatGPT conversations, but it is not an API available to this backend. The server currently supports optional Adzuna and regional Jooble job-board adapters. Adzuna API access is free for evaluation, but ongoing use in a public product requires written permission/licensing under Adzuna terms. Jooble uses separate regional API keys. We will add compliant direct discovery from official employer career pages and public employment sources as a separate implementation.
 
 Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. Both database tables and migrations are now applied in Supabase. Add `SUPABASE_SERVICE_ROLE_KEY` to Vercel before community reporting works live; moderation and public-read safeguards must be completed before reports are exposed.
 
@@ -85,18 +85,17 @@ Configure these in Vercel Project Settings → Environment Variables. Do not com
 | `ADZUNA_APP_ID` | Adzuna API application ID |
 | `ADZUNA_APP_KEY` | Adzuna API key |
 | `JOOBLE_API_KEYS` | JSON object mapping Jooble country codes to regional API keys, e.g. `{"gb":"...","de":"...","nl":"..."}`. Each country requires its own key. The legacy `JOOBLE_API_KEY` is treated as US-only. |
-| `TAVILY_API_KEY` | General web search API key |
 | `SUPABASE_URL` | Supabase project URL for community reports |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase secret key; never expose to clients |
 
 
-The server can start without provider keys, but search will return a clear configuration notice and no fabricated jobs.
+The server can start without provider keys, but live job-board search will return a clear configuration notice and no fabricated jobs. ChatGPT Web Search remains separate from the plugin backend.
 
 ## Local development
 
 1. Install Node.js 22 or later.
 2. Run `npm install`.
-3. Copy the required provider credentials into a local `.env.local` file (never commit it).
+3. Copy any provider credentials you choose to use into a local `.env.local` file (never commit it).
 4. Run `npm run dev`.
 5. Connect MCP Inspector to `http://localhost:3000/api/mcp`.
 
