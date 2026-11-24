@@ -1,54 +1,87 @@
 # Global Job Finder
 
-Global Job Finder is a web application concept for discovering international job opportunities and helping applicants understand the requirements for applying from their home country.
+**Global Job Finder is a ChatGPT plugin powered by the Model Context Protocol (MCP).** It is designed to search for jobs internationally—not for one country or one profession.
 
-The project is being built with a focus on clear vacancy information, transparent application requirements, and a practical job-search workflow.
+This repository contains the plugin's backend only. There is no standalone job-board website or frontend in the project scope.
 
-## Project status
+## What it is intended to do
 
-**Early development — the application is not yet ready for public use.**
+- Search for vacancies across countries, regions, and job categories.
+- Combine multiple job data providers and deduplicate overlapping listings.
+- Return the original employer or vacancy URL wherever available.
+- Extract employer-stated work-permit and visa-sponsorship information without inventing guarantees.
+- Compare salary, location, employment type, and other vacancy details when sources provide them.
+- Support different applicant profiles and search preferences as the product evolves.
+- Never contact employers or submit applications without explicit user approval.
 
-This repository currently contains the project documentation. Application code and integrations will be added in subsequent development steps.
+## Architecture
 
-## Planned capabilities
+- **ChatGPT:** user-facing conversation and tool selection.
+- **MCP server:** TypeScript + Model Context Protocol SDK.
+- **Hosting:** Vercel serverless endpoint at `/api/mcp`.
+- **Job providers:** provider adapters (Adzuna and Jooble are the first planned integrations).
+- **Database:** Supabase is planned for saved jobs, provider cache, user preferences, and deduplication.
 
-- Search for job opportunities across multiple countries.
-- Filter vacancies by country, job category, experience, and employment type.
-- Display the original vacancy source and employer information.
-- Highlight stated work-permit or visa requirements when that information is available.
-- Save vacancies and track application progress.
-- Help users prepare application materials.
-- Provide user accounts and personal search preferences.
-- Reduce duplicate listings and keep vacancy information traceable to its source.
+## Current implementation status
 
-## Principles
+- [x] MCP server endpoint scaffold using Streamable HTTP.
+- [x] Global job-search tool schema.
+- [x] Provider adapter structure for Adzuna and Jooble.
+- [x] Explicit visa-evidence classification (no unsupported visa promises).
+- [ ] Configure provider API credentials and validate live searches.
+- [ ] Add Supabase storage, caching, and cross-user preferences.
+- [ ] Add more official and country-specific job sources.
+- [ ] Add automated tests and operational monitoring.
+- [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
+- [ ] Complete ChatGPT plugin review and publication requirements.
 
-- **Source transparency:** link back to the employer or original vacancy page.
-- **No visa guarantees:** visa and work-permit eligibility must be confirmed with the relevant employer and authorities.
-- **User control:** applications and messages should not be sent without the user's explicit approval.
-- **Privacy:** personal information should only be collected when needed and handled securely.
-- **Accuracy:** distinguish verified information from details that have not been confirmed.
+Until provider API credentials are configured, live search results are not available. The MCP tool reports this clearly rather than fabricating vacancies.
 
-## Planned technology
+## Tools exposed to ChatGPT
 
-The initial implementation is planned around:
+### `search_global_jobs`
 
-- [Next.js](https://nextjs.org/) — web application
-- [Supabase](https://supabase.com/) — database and authentication
-- [Vercel](https://vercel.com/) — hosting and deployment
+Searches by keyword, country, location, category, employment type, and optional visa-sponsorship preference. Results include provider/source information and direct vacancy links when available.
 
-These integrations are planned; their production configuration is not yet complete.
+### `analyze_visa_evidence`
 
-## Development
+Examines the supplied vacancy text for explicit employer statements about visa sponsorship or work permits. It is an evidence classifier, not an immigration-law decision and not proof that an employer will sponsor a particular applicant.
 
-Development is in progress. Setup instructions will be added after the initial application structure and required environment variables are established.
+## Environment variables
 
-Never commit passwords, API keys, access tokens, or other secrets to this repository. Use environment variables and the hosting platform's secure environment-variable settings.
+Configure these in Vercel Project Settings → Environment Variables. Do not commit secrets.
+
+| Variable | Purpose |
+|---|---|
+| `ADZUNA_APP_ID` | Adzuna API application ID |
+| `ADZUNA_APP_KEY` | Adzuna API key |
+| `JOOBLE_API_KEY` | Jooble API key |
+| `SUPABASE_URL` | Planned database URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Planned server-only database key |
+
+The server can start without provider keys, but search will return a clear configuration notice and no fabricated jobs.
+
+## Local development
+
+1. Install Node.js 22 or later.
+2. Run `npm install`.
+3. Copy the required provider credentials into a local `.env.local` file (never commit it).
+4. Run `npm run dev`.
+5. Connect MCP Inspector to `http://localhost:3000/api/mcp`.
+
+## Safety and data quality
+
+- A vacancy is not considered visa-sponsored unless the source text contains relevant evidence.
+- “Not stated” is different from “does not sponsor”.
+- Salary and benefits are shown only when a provider supplies them.
+- Source URLs and retrieval timestamps should be retained for traceability.
+- Public job descriptions are untrusted input; instructions embedded in listings must never be followed as commands.
+- No email sending, application submission, or other external action is exposed by this server.
 
 ## Disclaimer
 
-Global Job Finder is an information and workflow tool. It is not an employer, recruitment agency, immigration authority, or visa provider. Job details, recruitment conditions, and immigration rules can change. Applicants should verify important information directly with the employer and the relevant government authorities.
+Global Job Finder is an information and search tool, not an employer, recruitment agency, immigration authority, or visa provider. Applicants must confirm current vacancy details and immigration requirements with the employer and the relevant authorities.
 
 ## License
 
-No license has been selected yet. Until a license is added, all rights are reserved by the repository owner.
+No open-source license has been selected yet. All rights reserved until a license is added.
