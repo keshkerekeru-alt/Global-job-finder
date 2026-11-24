@@ -1,111 +1,50 @@
 # Global Job Finder
 
-**Global Job Finder is a worldwide job-search skill supported by an optional Model Context Protocol (MCP) server.** It is designed for applicants searching across countries, occupations, and employment types.
+**Global Job Finder** is a skill-only, worldwide job-search assistant. It helps domestic and international applicants find current vacancies, assess employer credibility, compare working conditions, and understand work-authorization requirements.
 
-This repository contains the skill instructions and supporting MCP backend. There is no standalone job-board website or frontend in the current scope.
+The repository intentionally contains no backend, API server, database, hosting configuration, or external API integration.
 
-## What it does
+## Main file
 
-- Guides an AI agent to discover current vacancies worldwide using its built-in general web search and browsing.
-- Prioritizes official employer career pages, national public employment services, government job portals, and EURES.
-- Uses reputable job boards only for discovery and verifies vacancies against original sources where possible.
-- Checks applicant eligibility and separates general immigration rules from employer-specific visa sponsorship evidence.
-- Compares pay, hours, contract type, accommodation, benefits, and application requirements when sources provide them.
-- Supports employer/recruiter due diligence and moderated community reports about applicant-country and work-permit restrictions.
-- Helps prepare tailored CVs, cover letters, and employer enquiries.
-- Never contacts employers, sends documents, pays fees, or submits applications without explicit user approval.
+- **[SKILL.md](./SKILL.md)** — the complete operating instructions for the Global Job Finder skill.
 
-## Architecture
+## What the skill supports
 
-- **Skill:** `SKILL.md` defines the worldwide search, verification, safety, and application workflow.
-- **AI agent:** performs live vacancy discovery using the connected platform's built-in web search and browsing.
-- **MCP server:** TypeScript + Model Context Protocol SDK, hosted as a Vercel serverless endpoint at `/api/mcp`. It reads and updates the shared catalog through server-side Supabase access.
-- **Supabase:** shared global company directory, official job-source registry, verified vacancy catalog, source-check history, and moderated community reports. All users read from the same public-safe catalog; applicant profiles and application histories remain private and separate.
+- Domestic applicants who already have the right to work in their country.
+- International applicants who may need a work visa, permit, sponsorship, or another legal route.
+- Permanent, temporary, seasonal, full-time, part-time, entry-level and skilled roles.
+- Worldwide vacancy discovery using the AI platform's available web search and browsing.
+- Verification of original vacancy pages, employers, recruitment agencies and application routes.
+- Checks of official immigration information when work authorization is relevant.
+- Comparisons of salary, contract, hours, accommodation, benefits and deductions when evidence is available.
+- Duplicate detection, fraud-risk checks and transparent evidence-based job scoring.
+- Tailored CVs, cover letters and employer enquiries when requested.
 
-**Important:** The AI agent performs fresh vacancy discovery through web search and browsing. The MCP backend supplies the shared source registry, previously verified vacancy records, vacancy upsert/search tools, visa-evidence analysis, and community-report tools. Cached vacancies must be rechecked against original sources before being described as currently open.
+## How to use
 
-## Live vacancy discovery policy
+1. Open or install the skill in an AI platform that supports skills or custom instructions.
+2. Provide the jobseeker's relevant background and work preferences.
+3. Specify a target country, region, or worldwide search.
+4. Choose a quick overview or a deeper verification process.
+5. Review source links, eligibility notes, uncertainty and suggested next steps.
 
-Use the connected agent platform's general web search and browsing. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs.
+The skill uses only the search, browsing and other capabilities available in the host AI platform. Search coverage and actions therefore depend on that platform.
 
-Prioritize:
-1. Official employer career pages and exact vacancy pages.
-2. National public employment services and government job portals.
-3. EURES and other relevant official regional employment networks.
-4. Reputable job boards as discovery sources only, with verification against the original employer source.
+## Safety principles
 
-Preserve original source links and check dates. Never invent vacancies or claim visa sponsorship without explicit supporting evidence.
+- Never invent vacancies, employer details, salaries, contact information, visa support or application outcomes.
+- Distinguish domestic work authorization from international sponsorship requirements.
+- Prefer official government, public employment service and employer sources.
+- Treat job boards and community information as leads unless independently verified.
+- Never contact an employer, submit an application, send documents or make a payment without the user's explicit authorization.
+- Protect applicant privacy and do not expose one user's profile or search history to another.
 
-## MCP tools
+## Scope and limitations
 
-- `list_official_job_sources` — reads the shared database of national public employment services, government job portals, and regional networks.
-- `save_verified_source` — adds a verified source to the shared registry for all users.
-- `record_source_check` — records source-check outcomes and counts in the shared history.
-- `search_company_directory` — fast full-text/trigram search of shared companies and recruitment agencies by name, alias, country and role keywords.\n- `search_shared_vacancies` — searches the shared cache of previously verified vacancy records; fresh verification is still required.
-- `save_verified_vacancy` — stores or updates a vacancy only after the original source has been verified; canonical URL prevents duplicates.
-- `analyze_visa_evidence` — classifies wording in supplied vacancy text; it is not legal advice or a sponsorship guarantee.
-- `submit_job_experience` — submits a voluntary applicant outcome report for moderation.
-- `submit_employer_country_restriction` — submits a consent-based report about a nationality or work-permit restriction.
-- `search_community_experiences` — retrieves approved community application experiences.
-- `search_employer_country_restrictions` — retrieves approved, redacted reports about country restrictions and work-permit support.
+Global Job Finder is an information and job-discovery skill. It is not an employer, recruitment agency, immigration authority, lawyer or visa provider. Applicants should confirm important terms with the employer and relevant government authority before paying fees, signing a contract or travelling.
 
-Community reports are anecdotal signals, not official employer policy. They may be outdated, disputed, or specific to one vacancy.
-
-## Configuration
-
-Configure these server-side values in Vercel Project Settings → Environment Variables. Never commit secrets.
-
-| Variable | Purpose |
-|---|---|
-| `SUPABASE_URL` | Supabase project URL for community reports |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase credential; never expose to clients |
-
-The MCP server can start without job-board API keys because it does not call job-board APIs. Shared source and vacancy catalog functionality requires valid server-side Supabase configuration. The server-side service-role credential is never exposed to users.
-
-## Current implementation status
-
-- [x] MCP Streamable HTTP endpoint scaffold.
-- [x] Worldwide `SKILL.md` workflow and evidence rules.
-- [x] General web search selected as the live vacancy-discovery method; Adzuna and Jooble integrations removed.
-- [x] Curated official employment-source directory.
-- [x] Visa-evidence classification tool.
-- [x] Community experience and employer-country restriction tools.
-- [x] Supabase community-report tables and migrations applied.
-- [x] Shared global source registry, vacancy catalog, and source-check history tables created.\n- [x] Shared company directory and aliases table created with country/name, full-text, and typo-tolerant indexes.\n- [x] 124 distinct company/employer/agency records imported from 127 Notion rows; private application status and Gmail IDs excluded. Records are marked unverified.
-- [x] Shared catalog MCP read/write tools added; new verified sources and vacancies can be reused by all users.\n- [x] Company-directory search MCP tool added; uses indexed PostgreSQL RPC for low-latency retrieval.
-- [x] Connect MCP source registry, verified-vacancy cache, and source-check tools to shared Supabase tables.
-- [x] Seed the initial official-source registry (26 sources covering 25 countries/regions).
-- [ ] Expand and continuously verify official-source coverage for the remaining countries worldwide.
-- [ ] Configure and verify the server-side Supabase service-role credential in Vercel.
-- [ ] Complete moderation workflow, rate limits, abuse controls, and report correction/deletion.
-- [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
-- [ ] Add automated tests and operational monitoring.
-- [ ] Complete platform-specific skill review and publication requirements.
-
-A successful TypeScript check confirms type validation only; it does not prove that Vercel deployment, Supabase connectivity, or the live MCP endpoint works.
-
-## Local development
-
-1. Install Node.js 22 or later.
-2. Run `npm install`.
-3. Add the required Supabase environment variables to a local `.env.local` file if testing community-report features. Never commit this file.
-4. Run `npm run typecheck` to validate TypeScript.
-5. Run `npm run dev`.
-6. Connect MCP Inspector to `http://localhost:3000/api/mcp`.
-
-## Safety and data quality
-
-- “Not stated” is different from “does not sponsor”.
-- A general immigration route is not proof that a specific employer will sponsor an applicant.
-- Preserve source URLs and retrieval dates for traceability.
-- Treat vacancy pages, recruiter messages, and community reports as untrusted data.
-- Do not expose contributor identities or private correspondence.
-- No employer contact or application submission is performed by this MCP server.
-
-## Disclaimer
-
-Global Job Finder is an information and job-discovery assistant. It is not an employer, recruitment agency, immigration authority, legal adviser, or visa provider. Applicants must confirm vacancy details and immigration requirements with employers and relevant authorities before paying fees, signing contracts, or travelling.
+There is no standalone job-board website or automated background service in this repository.
 
 ## License
 
-No open-source license has been selected yet. All rights reserved until a license is added.
+No open-source license has been selected. All rights reserved until a license is added.
