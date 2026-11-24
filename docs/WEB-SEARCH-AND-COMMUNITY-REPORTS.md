@@ -5,7 +5,7 @@ Global Job Finder is a multi-user worldwide job discovery service. Each applican
 
 ## Shared central data catalog
 All users share the same central Supabase catalog:
-- `official_job_sources`: verified public employment services, government job portals, regional networks and other approved source records.
+- `company_profiles` and `company_aliases`: shared company/employer/recruiter directory, searchable by normalized name, aliases, country, roles, full-text and trigram indexes. Imported Notion records are marked `unverified_import` until officially checked.\n- `official_job_sources`: verified public employment services, government job portals, regional networks and other approved source records.
 - `job_vacancies`: source-verified vacancy records, deduplicated by canonical URL.
 - `source_check_runs`: timestamped source-check results and counts.
 - `job_experiences` and `employer_restriction_reports`: voluntary, moderated community evidence.
@@ -28,7 +28,7 @@ The product has no fixed global result count. If a user requests 15 jobs, search
 ## Source coverage
 The source registry is a growing global directory, not a claim that every country has already been covered. Add new countries and source records only after validating that the source is official or otherwise appropriately vetted. Keep country, source type, URL, language, verification state and last-verified date.
 
-## Vacancy record requirements
+## Company directory and search performance\nCompany search uses a normalized-name/country unique index, country/type and contact indexes, PostgreSQL full-text GIN index, trigram GIN index for typo-tolerant names, and an alias table. The `search_company_directory` RPC caps results at 50 and ranks exact name matches before full-text and similarity matches. Keep queries scoped by country when possible.\n\n## Vacancy record requirements
 Each stored vacancy should include employer, title, country, city, original vacancy URL, canonical URL, source name, source URL, vacancy status, employment type, salary text, requirements, publication/closing dates, international-applicant evidence, visa/work-permit evidence, and last-check date where available. Missing facts remain null or "not stated"; never infer them.
 
 ## Security
