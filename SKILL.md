@@ -47,7 +47,7 @@ Prioritize, in this order:
 
 Quality is more important than the number of results. Never invent vacancies, employers, email addresses, salaries, visa sponsorship, or application outcomes.
 
-Use the web-search and browsing capabilities available in the host environment. This skill must remain useful without a dedicated API, database, MCP server, paid search subscription, or any particular job-board integration. Do not claim that a tool, integration, database, or application action was used unless it actually was.
+Use the web-search and browsing capabilities available in the host environment. Do not claim that a source was checked or an application action was completed unless it actually happened.
 
 ## 2. Understand the applicant
 
