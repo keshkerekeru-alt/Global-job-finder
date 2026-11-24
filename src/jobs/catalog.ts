@@ -122,3 +122,66 @@ export async function searchSharedVacancies(country?: string, keywords?: string,
     note: "These are previously verified records from the shared catalog, checked within the last 30 days. Reopen each original source before relying on its current availability or visa details."
   };
 }
+
+export async function saveVerifiedSource(input: {
+  country: string;
+  source_name: string;
+  source_url: string;
+  source_kind: "public_employment_service" | "government_job_portal" | "regional_network" | "employer_career_page" | "licensed_recruitment_agency";
+  source_scope: "national" | "regional" | "international" | "employer";
+  language_codes?: string[];
+  notes?: string;
+}) {
+  const url = new URL(input.source_url);
+  if (!["http:", "https:"].includes(url.protocol)) throw new Error("source_url must be an HTTP(S) URL.");
+  const now = new Date().toISOString();
+  const rows = await request("official_job_sources?on_conflict=source_url", {
+    method: "POST",
+    headers: { Prefer: "resolution=merge-duplicates,return=representation" },
+    body: JSON.stringify({
+      ...input,
+      country: input.country.trim(),
+      source_name: input.source_name.trim(),
+      source_url: url.toString(),
+      language_codes: input.language_codes ?? [],
+      notes: input.notes ?? "",
+      is_active: true,
+      verification_status: "verified",
+      last_verified_at: now,
+      updated_at: now
+    })
+  }) as Array<{ id: number; source_url: string }>;
+  return {
+    saved: true,
+    source_id: rows[0]?.id ?? null,
+    source_url: rows[0]?.source_url ?? url.toString(),
+    message: "Verified source saved to the shared global source registry for all users."
+  };
+}
+
+export async function recordSourceCheck(input: {
+  source_id?: number;
+  source_url: string;
+  result_status: "success" | "partial" | "failed" | "blocked";
+  vacancies_found?: number;
+  vacancies_verified?: number;
+  error_summary?: string;
+  run_metadata?: Record<string, unknown>;
+}) {
+  const rows = await request("source_check_runs", {
+    method: "POST",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify({
+      ...input,
+      vacancies_found: input.vacancies_found ?? 0,
+      vacancies_verified: input.vacancies_verified ?? 0,
+      run_metadata: input.run_metadata ?? {}
+    })
+  }) as Array<{ id: number; checked_at: string }>;
+  return {
+    recorded: true,
+    run_id: rows[0]?.id ?? null,
+    checked_at: rows[0]?.checked_at ?? new Date().toISOString(),
+    message: "Source-check result recorded in the shared catalog history."
+  };
+}
