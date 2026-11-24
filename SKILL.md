@@ -69,6 +69,25 @@ Do not infer citizenship from language, name, location, or ethnicity.
 
 Use the agent platform's general web-search and browsing capabilities to discover current vacancies worldwide. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs. Live vacancy discovery must work without the optional Global Job Finder MCP server. If that MCP server is connected, use it only for its official-source directory, visa-evidence analysis, and approved community-report tools; it does not retrieve live vacancies. The MCP server is optional, is not hosted by Agensi, and requires a separately configured endpoint. Never claim that the MCP backend returned job listings. If web search is unavailable, state the limitation clearly.
 
+## Batch search: return up to 15 vacancies in one run
+
+When the applicant asks for 15 jobs, treat 15 as the target result count for a single completed search, not as a reason to stop after the first few search results.
+
+1. Build a search matrix before searching. For the target country, prepare at least 8 distinct query variants covering:
+   - local-language and English job titles;
+   - at least 4 relevant role families that match the applicant (for example production, warehouse/logistics, cleaning/facility services, hospitality, construction support, agriculture where legally viable);
+   - synonyms such as helper, assistant, operative, packer, loader, cleaner, kitchen assistant, and entry-level;
+   - phrases for applicants from abroad, relocation, visa, work permit, and international recruitment.
+2. Search in batches across multiple independent source groups: official public employment services, government portals intended for foreign applicants, EURES where relevant, employer career pages, and reputable job boards as discovery sources. Do not rely on one portal or one query.
+3. Inspect multiple result pages or pagination where available. Search at least 3 source groups and 8 query variants before concluding that the target cannot be reached. Continue with new role-title synonyms, regions, and employer career pages when fewer than 15 eligible results have been verified.
+4. Collect a candidate pool larger than the requested output (normally 25–40 candidates), then open and validate each original vacancy page. Deduplicate by employer + job title + location + vacancy URL. Remove expired, closed, duplicated, vague, and unverifiable listings.
+5. Apply the applicant's stated filters consistently. If the applicant prefers jobs without formal qualifications, prioritize vacancies that explicitly say no formal qualification is required or accept entry-level applicants. Do not silently treat a mandatory certificate, licence, apprenticeship, or recognized vocational qualification as optional.
+6. Keep vacancy suitability and immigration eligibility as separate assessments. Do not discard a genuine vacancy solely because sponsorship is not stated; include it only if it otherwise matches the requested search, label visa support precisely, and clearly separate confirmed, unclear, and unsupported cases. Never imply that a job listing proves the employer will sponsor a visa.
+7. Return up to the requested number (maximum 15 when the user has set a 15-employer daily limit) in one consolidated answer. Aim to fill all 15 with distinct, current, source-verified vacancies. If fewer than 15 survive after the required search coverage, return the verified number and state exactly how many were found, which source groups and query families were checked, and the concrete reason the remaining slots could not be filled. Never invent or lower verification standards just to reach 15.
+8. Before presenting the batch, run a final quality pass: verify the live vacancy link, employer identity, location, date/freshness, requirements, application route, pay/conditions where available, and work-authorization evidence. Show the date checked and mark missing facts as "Not stated" rather than guessing.
+
+For batch requests, structure the output as one numbered list or compact table with up to 15 separate vacancies. Include columns/fields for employer, job title, location, pay, requirements, official vacancy link, application route, international-applicant evidence, visa/work-permit status, and verification date. Do not split the result into multiple rounds unless the user asks for continuation.
+
 ## Evidence and verification rules
 
 For every vacancy, classify evidence separately:
