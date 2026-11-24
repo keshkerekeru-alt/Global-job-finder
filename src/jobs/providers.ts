@@ -40,7 +40,7 @@ function normalizeCountry(value: string) {
 
 function visaEvidence(description: string) {
   const text = description.toLowerCase();
-  const negative = /no sponsorship|unable to sponsor|cannot sponsor|must have (?:the )?right to work|right to work required|valid work authori[sz]ation required/.test(text);
+  const negative = /no (?:visa )?sponsorship|unable to sponsor|cannot sponsor|visa sponsorship (?:is )?not available|must have (?:the )?right to work|right to work required|valid work authori[sz]ation required/.test(text);
   if (!negative && /visa sponsorship|sponsor(?:ship|ing)? (?:a |the )?work visa|work permit sponsorship|sponsorship available|will sponsor (?:a )?visa/.test(text)) {
     return "Employer wording mentions visa/work-permit sponsorship; verify directly with employer.";
   }
