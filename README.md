@@ -31,7 +31,8 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [x] Provider adapter structure for Adzuna and Jooble.
 - [x] Explicit visa-evidence classification (no unsupported visa promises).
 - [ ] Configure provider API credentials and validate live searches.
-- [ ] Add compliant discovery from official employer career pages, public employment services and EURES without depending on a paid search API.
+- [x] Add a curated directory of official public employment services, government job portals and EURES links.
+- [ ] Add live, compliant vacancy retrieval from official employer career pages and public employment services without depending on a paid search API.
 - [x] Add moderated applicant-experience and country-restriction reporting/search MCP tools.
 - [x] Create Supabase project and apply both community-report SQL migrations; both tables and RLS are verified. Server-side service-role credential and moderation workflow are still outstanding.
 - [ ] Add caching, rate limits, and abuse controls.
@@ -89,7 +90,7 @@ Configure these in Vercel Project Settings → Environment Variables. Do not com
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase secret key; never expose to clients |
 
 
-The server can start without provider keys, but live job-board search will return a clear configuration notice and no fabricated jobs. ChatGPT Web Search remains separate from the plugin backend.
+The server can start without provider keys. In that case, live job-board search returns a clear configuration notice and no fabricated jobs; the official-source directory remains available. ChatGPT Web Search remains separate from the plugin backend.
 
 ## Local development
 
