@@ -9,11 +9,11 @@ Search and prioritize:
 - Official employer career pages and exact vacancy pages.
 - National public employment services and government job portals.
 - EURES and other official regional employment networks where relevant.
-- Reputable job boards only as discovery sources; verify the vacancy on the original employer or official source whenever possible.
+- Reputable job boards only as discovery sources; verify vacancies on the original employer or official source whenever possible.
 
 The MCP backend does not retrieve live vacancies. It provides official-source directories, visa-evidence analysis, and moderated community reports to support the agent's research.
 
-Search results must preserve the original source URL, employer, country, retrieval timestamp, and whether the result is a direct vacancy or a discovery page. Deduplicate equivalent vacancies. Never invent a vacancy or claim that a page confirms sponsorship unless the page explicitly says so.
+Search results must preserve the original source URL, employer, country, retrieval/check date, and whether the result is a direct vacancy or a discovery page. Deduplicate equivalent vacancies. Never invent a vacancy or claim that a page confirms sponsorship unless the page explicitly says so.
 
 Use only the web-search and browsing capabilities available in the connected agent platform. Do not scrape sites that prohibit automated access.
 
@@ -34,7 +34,7 @@ Each report should support:
 Do not conflate a nationality restriction with lack of visa sponsorship. A company may reject one application for a role without having a general country-wide policy.
 
 ### 3. Reuse reports to help other searchers
-When searching, show relevant reports alongside vacancies, filtered by employer, job country, and refused applicant country. Display report date, evidence type, confidence, and status. Older reports must be visibly marked as potentially outdated. Reports are signals for further verification, not guarantees or legal advice.
+When searching, show relevant approved reports alongside vacancies, filtered by employer, job country, and refused applicant country. Display report date, evidence type, confidence, and status. Older reports must be visibly marked as potentially outdated. Reports are signals for further verification, not guarantees or legal advice.
 
 ### 4. Privacy, consent, and abuse prevention
 - Community reporting must be voluntary and require clear user consent before submission.
@@ -64,10 +64,10 @@ employer_reports:
 Contributor identity, if needed for abuse prevention, must be private and separated from public report data. Anonymous public display is the default.
 
 ### 6. Acceptance criteria
-- A search can return API vacancies and relevant official web-discovered vacancies in one deduplicated result set.
-- Each result links to its original source and carries a retrieval timestamp.
-- A user can submit a country-restriction / permit-support report with a date and evidence category.
-- Other users can see matching reports without seeing contributor identity or private correspondence.
-- The interface distinguishes not stated, reported no sponsorship, and confirmed not accepting this nationality.
+- The AI agent can discover current vacancies through general web search and browsing; the MCP backend is not expected to return live vacancy listings.
+- Each discovered vacancy links to its original source and records a check/retrieval date.
+- A user can submit a country-restriction / permit-support report with a date and evidence category, with explicit consent.
+- Other users can see approved matching reports without seeing contributor identity or private correspondence.
+- The output distinguishes not stated, reported no sponsorship, and confirmed refusal of a particular applicant nationality.
 - Stale, disputed, and unverified reports are clearly labeled.
-- No user report is treated as verified policy without corroboration.
+- No user report is treated as verified employer policy without corroboration.
