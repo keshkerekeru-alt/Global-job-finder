@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { analyzeVisaEvidence } from "../jobs/visa-evidence.js";
 import { submitExperience, searchExperiences, submitRestrictionReport, searchRestrictionReports } from "../jobs/experiences.js";
-import { listSharedSources, saveVerifiedVacancy, searchSharedVacancies } from "../jobs/catalog.js";
+import { listSharedSources, saveVerifiedSource, saveVerifiedVacancy, searchSharedVacancies, recordSourceCheck } from "../jobs/catalog.js";
 
 export function createServer() {
   const server = new McpServer(
@@ -19,8 +19,8 @@ export function createServer() {
     outputSchema: {
       sources: z.array(z.object({
         country: z.string(), name: z.string(), url: z.string(),
-        kind: z.enum(["public_employment_service", "government_job_portal", "regional_network"]),
-        notes: z.string()
+        kind: z.enum(["public_employment_service", "government_job_portal", "regional_network", "employer_career_page", "licensed_recruitment_agency"]),
+        scope: z.string(), languages: z.array(z.string()), notes: z.string(), last_verified_at: z.string().nullable()
       })),
       matched_countries: z.array(z.string()),
       note: z.string()
@@ -29,6 +29,44 @@ export function createServer() {
   }, async ({ countries }) => {
     const result = await listSharedSources(countries);
     return { structuredContent: result, content: [{ type: "text", text: result.note }] };
+  });
+
+  server.registerTool("save_verified_source", {
+    title: "Add verified source to global registry",
+    description: "Add or update a public employment service, government job portal, regional job network, employer career page, or vetted recruitment source in the shared global registry. Verify the official identity and URL before saving.",
+    inputSchema: {
+      country: z.string().min(2).max(80),
+      source_name: z.string().min(2).max(180),
+      source_url: z.string().url().max(1000),
+      source_kind: z.enum(["public_employment_service", "government_job_portal", "regional_network", "employer_career_page", "licensed_recruitment_agency"]),
+      source_scope: z.enum(["national", "regional", "international", "employer"]),
+      language_codes: z.array(z.string().max(12)).max(20).optional(),
+      notes: z.string().max(1000).optional()
+    },
+    outputSchema: { saved: z.boolean(), source_id: z.number().nullable(), source_url: z.string(), message: z.string() },
+    annotations: { readOnlyHint: false, openWorldHint: false, destructiveHint: false }
+  }, async (input) => {
+    const result = await saveVerifiedSource(input);
+    return { structuredContent: result, content: [{ type: "text", text: result.message }] };
+  });
+
+  server.registerTool("record_source_check", {
+    title: "Record source check",
+    description: "Record a source-check outcome and counts in the shared data center after checking a source. Do not include applicant personal information.",
+    inputSchema: {
+      source_id: z.number().int().positive().optional(),
+      source_url: z.string().url().max(1000),
+      result_status: z.enum(["success", "partial", "failed", "blocked"]),
+      vacancies_found: z.number().int().min(0).optional(),
+      vacancies_verified: z.number().int().min(0).optional(),
+      error_summary: z.string().max(500).optional(),
+      run_metadata: z.record(z.unknown()).optional()
+    },
+    outputSchema: { recorded: z.boolean(), run_id: z.number().nullable(), checked_at: z.string(), message: z.string() },
+    annotations: { readOnlyHint: false, openWorldHint: false, destructiveHint: false }
+  }, async (input) => {
+    const result = await recordSourceCheck(input);
+    return { structuredContent: result, content: [{ type: "text", text: result.message }] };
   });
 
   server.registerTool("search_shared_vacancies", {
