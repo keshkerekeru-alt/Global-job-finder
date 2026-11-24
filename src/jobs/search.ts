@@ -7,7 +7,7 @@ export async function searchGlobalJobs(input: JobSearchInput) {
     ? `Found ${result.jobs.length} job listings from ${result.providers.join(" and ")}. Check each source link and confirm details with the employer. Visa wording is only a text signal, not a sponsorship guarantee.`
     : result.configured
       ? `No matching vacancies were returned by the configured providers. ${result.errors.join("; ") || "Try broader keywords, another country, or a different page."}`
-      : "Live job sources are not configured yet. Add ADZUNA_APP_ID and ADZUNA_APP_KEY (and/or JOOBLE_API_KEY) in the hosting environment before using live global search. No sample or fabricated vacancies are returned.";
+      : "Live search is not configured yet. Add TAVILY_API_KEY for general web search and/or Adzuna and Jooble credentials for job-board APIs. No sample or fabricated vacancies are returned.";
   return {
     query: input.keywords,
     results: result.jobs.map(job => ({
