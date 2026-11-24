@@ -20,7 +20,7 @@ This repository contains the skill instructions and supporting MCP backend. Ther
 - **Skill:** `SKILL.md` defines the worldwide search, verification, safety, and application workflow.
 - **AI agent:** performs live vacancy discovery using the connected platform's built-in web search and browsing.
 - **MCP server:** TypeScript + Model Context Protocol SDK, hosted as a Vercel serverless endpoint at `/api/mcp`. It reads and updates the shared catalog through server-side Supabase access.
-- **Supabase:** shared global registry of official job sources, verified vacancy catalog, source-check history, and moderated community reports. All users read from the same public-safe catalog; applicant profiles and application histories remain private and separate.
+- **Supabase:** shared global company directory, official job-source registry, verified vacancy catalog, source-check history, and moderated community reports. All users read from the same public-safe catalog; applicant profiles and application histories remain private and separate.
 
 **Important:** The AI agent performs fresh vacancy discovery through web search and browsing. The MCP backend supplies the shared source registry, previously verified vacancy records, vacancy upsert/search tools, visa-evidence analysis, and community-report tools. Cached vacancies must be rechecked against original sources before being described as currently open.
 
@@ -41,7 +41,7 @@ Preserve original source links and check dates. Never invent vacancies or claim 
 - `list_official_job_sources` — reads the shared database of national public employment services, government job portals, and regional networks.
 - `save_verified_source` — adds a verified source to the shared registry for all users.
 - `record_source_check` — records source-check outcomes and counts in the shared history.
-- `search_shared_vacancies` — searches the shared cache of previously verified vacancy records; fresh verification is still required.
+- `search_company_directory` — fast full-text/trigram search of shared companies and recruitment agencies by name, alias, country and role keywords.\n- `search_shared_vacancies` — searches the shared cache of previously verified vacancy records; fresh verification is still required.
 - `save_verified_vacancy` — stores or updates a vacancy only after the original source has been verified; canonical URL prevents duplicates.
 - `analyze_visa_evidence` — classifies wording in supplied vacancy text; it is not legal advice or a sponsorship guarantee.
 - `submit_job_experience` — submits a voluntary applicant outcome report for moderation.
@@ -71,8 +71,8 @@ The MCP server can start without job-board API keys because it does not call job
 - [x] Visa-evidence classification tool.
 - [x] Community experience and employer-country restriction tools.
 - [x] Supabase community-report tables and migrations applied.
-- [x] Shared global source registry, vacancy catalog, and source-check history tables created.
-- [x] Shared catalog MCP read/write tools added; new verified sources and vacancies can be reused by all users.
+- [x] Shared global source registry, vacancy catalog, and source-check history tables created.\n- [x] Shared company directory and aliases table created with country/name, full-text, and typo-tolerant indexes.\n- [x] 124 distinct company/employer/agency records imported from 127 Notion rows; private application status and Gmail IDs excluded. Records are marked unverified.
+- [x] Shared catalog MCP read/write tools added; new verified sources and vacancies can be reused by all users.\n- [x] Company-directory search MCP tool added; uses indexed PostgreSQL RPC for low-latency retrieval.
 - [x] Connect MCP source registry, verified-vacancy cache, and source-check tools to shared Supabase tables.
 - [x] Seed the initial official-source registry (26 sources covering 25 countries/regions).
 - [ ] Expand and continuously verify official-source coverage for the remaining countries worldwide.
