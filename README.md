@@ -41,6 +41,14 @@ This repository contains the plugin's backend only. There is no standalone job-b
 
 Until provider API credentials are configured, live search results are not available. Community reports also require the Supabase migration and server-side credentials. Reports remain private until moderated and approved. The MCP tool reports this clearly rather than fabricating vacancies.
 
+## Planned global discovery and community intelligence
+
+The long-term search design combines job-provider APIs (Adzuna and Jooble) with general web search, official employer career pages, public employment portals, and country-specific services such as EURES. Web discovery results must be validated against their original source and deduplicated.
+
+A voluntary community-reporting feature is also specified. Users can record a dated report that an employer rejected applicants from a particular country, does not support a work permit, or does not offer visa sponsorship. Reports will be shown to other searchers with evidence type, date, and verification status. These outcomes remain separate; one report must not be treated as a universal employer policy. Public reports must not expose contributors' identities or private correspondence.
+
+See [Web Search and Community Reports requirements](docs/WEB-SEARCH-AND-COMMUNITY-REPORTS.md). This is a product specification; the web-search integrations and community database are not yet implemented.
+
 ## Tools exposed to ChatGPT
 
 ### `search_global_jobs`
