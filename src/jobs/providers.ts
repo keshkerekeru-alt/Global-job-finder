@@ -172,7 +172,7 @@ export async function searchProviders(input: JobSearchInput) {
   if (process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) {
     tasks.push({ name: "Adzuna", run: () => searchAdzuna(input, countries, limit) });
   }
-  if (process.env.JOOBLE_API_KEY) {
+  if (Object.keys(joobleKeys()).length > 0) {
     tasks.push({ name: "Jooble", run: () => searchJooble(input, countries, limit) });
   }
   if (process.env.TAVILY_API_KEY) {
