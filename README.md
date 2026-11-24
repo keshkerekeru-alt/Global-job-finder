@@ -60,6 +60,14 @@ Searches by keyword, country, location, category, employment type, and optional 
 
 Submits an applicant's outcome (accepted, rejected, or no response), origin country, destination country, employer, and optional reason/visa-support notes. New reports stay pending until reviewed; personal identifiers and sensitive documents must not be submitted.
 
+### `submit_employer_country_restriction`
+
+Submits a dated report that an employer or recruiter refused applicants from a specified country, requires an existing work permit, or does not offer visa sponsorship. The report records the applicant country, job country, report date, employer, outcome, evidence type, and whether it concerns one vacancy or company policy. Explicit consent is required; the report stays private until moderation.
+
+### `search_employer_country_restrictions`
+
+Searches approved, redacted reports by refused applicant country, job country, and/or employer. Results include the report date, evidence status, and whether the report may be outdated. These are community signals, not official policy.
+
 ### `search_community_experiences`
 
 Returns only approved reports matching an origin country, destination country, or employer. Community reports are anecdotal, may be outdated, and are not official employer or immigration policy.
