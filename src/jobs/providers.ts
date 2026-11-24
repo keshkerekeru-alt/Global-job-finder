@@ -28,9 +28,9 @@ const ADZUNA_COUNTRIES: Record<string, string> = {
   australia: "au", austria: "at", belgium: "be", brazil: "br", canada: "ca",
   germany: "de", france: "fr", india: "in", ireland: "ie", italy: "it",
   mexico: "mx", netherlands: "nl", newzealand: "nz", poland: "pl",
-  singapore: "sg", southafrica: "za", spain: "es", sweden: "se",
-  switzerland: "ch", unitedkingdom: "gb", uk: "gb", usa: "us",
-  "united states": "us", "united states of america": "us"
+  singapore: "sg", southafrica: "za", "south africa": "za", spain: "es", sweden: "se",
+  switzerland: "ch", unitedkingdom: "gb", "united kingdom": "gb", uk: "gb", usa: "us",
+  "united states": "us", "united states of america": "us", "new zealand": "nz"
 };
 
 function normalizeCountry(value: string) {
