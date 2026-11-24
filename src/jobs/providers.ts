@@ -101,7 +101,8 @@ async function searchAdzuna(input: JobSearchInput, countries: string[], limit: n
     });
     if (!response.ok) throw new Error(`Adzuna ${code}: HTTP ${response.status}`);
     const data = await response.json() as { results?: any[] };
-    const countryName = searchCountries.find(name => ADZUNA_COUNTRIES[normalizeCountry(name)] === code) ?? code.toUpperCase();\n    return (data.results ?? []).map(item => toJob(item, "Adzuna", countryName)).filter(Boolean) as GlobalJob[];
+    const countryName = searchCountries.find(name => ADZUNA_COUNTRIES[normalizeCountry(name)] === code) ?? code.toUpperCase();
+    return (data.results ?? []).map(item => toJob(item, "Adzuna", countryName)).filter(Boolean) as GlobalJob[];
   }));
   return groups.flat();
 }
