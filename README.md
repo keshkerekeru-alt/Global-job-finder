@@ -44,7 +44,7 @@ Until provider API credentials are configured, live search results are not avail
 
 ## Planned global discovery and community intelligence
 
-General web discovery is implemented through Tavily alongside Adzuna and Jooble. It runs broad job discovery and a separate query targeting official employer career pages, public employment services, government job portals and EURES. Search snippets/raw page text are discovery evidence only; users must open and verify the original vacancy page. Configure `TAVILY_API_KEY` to enable it.
+General web discovery is implemented through Tavily alongside Adzuna and Jooble. Tavily uses the free monthly credit balance and stops working when credits are exhausted unless a paid option is explicitly enabled. Jooble uses separate regional API keys. Adzuna API access is free for evaluation, but ongoing use in a public product requires written permission/licensing under Adzuna terms. It runs broad job discovery and a separate query targeting official employer career pages, public employment services, government job portals and EURES. Search snippets/raw page text are discovery evidence only; users must open and verify the original vacancy page. Configure `TAVILY_API_KEY` to enable it.
 
 Country-restriction reporting is implemented in the MCP server and has a dedicated Supabase migration. Users can submit the refused applicant country, job country, employer, date, outcome, vacancy/company-wide scope, evidence type and a redacted excerpt, with explicit consent. Reports remain pending until moderation. Job searches can return approved reports matching applicant origin and destination country; old reports are flagged as potentially outdated. Both database tables and migrations are now applied in Supabase. Add `SUPABASE_SERVICE_ROLE_KEY` to Vercel before community reporting works live; moderation and public-read safeguards must be completed before reports are exposed.
 
@@ -84,7 +84,7 @@ Configure these in Vercel Project Settings → Environment Variables. Do not com
 |---|---|
 | `ADZUNA_APP_ID` | Adzuna API application ID |
 | `ADZUNA_APP_KEY` | Adzuna API key |
-| `JOOBLE_API_KEY` | Jooble API key |
+| `JOOBLE_API_KEYS` | JSON object mapping Jooble country codes to regional API keys, e.g. `{"gb":"...","de":"...","nl":"..."}`. Each country requires its own key. The legacy `JOOBLE_API_KEY` is treated as US-only. |
 | `TAVILY_API_KEY` | General web search API key |
 | `SUPABASE_URL` | Supabase project URL for community reports |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase secret key; never expose to clients |
