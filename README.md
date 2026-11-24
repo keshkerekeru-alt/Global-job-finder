@@ -7,7 +7,9 @@ This repository contains the plugin's backend only. There is no standalone job-b
 ## What it is intended to do
 
 - Search for vacancies across countries, regions, and job categories.
-- Combine multiple job data providers and deduplicate overlapping listings.
+- Combine job-board APIs with general-purpose web search and deduplicate overlapping listings.
+- Search employer career pages and public vacancy sources, not only job aggregators.
+- Collect applicant-reported outcomes by origin country, destination country, and employer; publish reports only after moderation.
 - Return the original employer or vacancy URL wherever available.
 - Extract employer-stated work-permit and visa-sponsorship information without inventing guarantees.
 - Compare salary, location, employment type, and other vacancy details when sources provide them.
@@ -19,7 +21,7 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - **ChatGPT:** user-facing conversation and tool selection.
 - **MCP server:** TypeScript + Model Context Protocol SDK.
 - **Hosting:** Vercel serverless endpoint at `/api/mcp`.
-- **Job providers:** provider adapters (Adzuna and Jooble are the first planned integrations).
+- **Search providers:** Adzuna, Jooble, and Tavily-powered general web search.
 - **Database:** Supabase is planned for saved jobs, provider cache, user preferences, and deduplication.
 
 ## Current implementation status
@@ -29,19 +31,29 @@ This repository contains the plugin's backend only. There is no standalone job-b
 - [x] Provider adapter structure for Adzuna and Jooble.
 - [x] Explicit visa-evidence classification (no unsupported visa promises).
 - [ ] Configure provider API credentials and validate live searches.
-- [ ] Add Supabase storage, caching, and cross-user preferences.
+- [x] Add moderated community experience-report schema and MCP tools (database connection still required).
+- [ ] Connect Supabase and apply the migration.
+- [ ] Add caching, rate limits, and abuse controls.
 - [ ] Add more official and country-specific job sources.
 - [ ] Add automated tests and operational monitoring.
 - [ ] Deploy a stable public HTTPS endpoint and test it with MCP Inspector.
 - [ ] Complete ChatGPT plugin review and publication requirements.
 
-Until provider API credentials are configured, live search results are not available. The MCP tool reports this clearly rather than fabricating vacancies.
+Until provider API credentials are configured, live search results are not available. Community reports also require the Supabase migration and server-side credentials. Reports remain private until moderated and approved. The MCP tool reports this clearly rather than fabricating vacancies.
 
 ## Tools exposed to ChatGPT
 
 ### `search_global_jobs`
 
 Searches by keyword, country, location, category, employment type, and optional visa-sponsorship preference. Results include provider/source information and direct vacancy links when available.
+
+### `submit_job_experience`
+
+Submits an applicant's outcome (accepted, rejected, or no response), origin country, destination country, employer, and optional reason/visa-support notes. New reports stay pending until reviewed; personal identifiers and sensitive documents must not be submitted.
+
+### `search_community_experiences`
+
+Returns only approved reports matching an origin country, destination country, or employer. Community reports are anecdotal, may be outdated, and are not official employer or immigration policy.
 
 ### `analyze_visa_evidence`
 
@@ -56,8 +68,10 @@ Configure these in Vercel Project Settings → Environment Variables. Do not com
 | `ADZUNA_APP_ID` | Adzuna API application ID |
 | `ADZUNA_APP_KEY` | Adzuna API key |
 | `JOOBLE_API_KEY` | Jooble API key |
-| `SUPABASE_URL` | Planned database URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Planned server-only database key |
+| `TAVILY_API_KEY` | General web search API key |
+| `SUPABASE_URL` | Supabase project URL for community reports |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase secret key; never expose to clients |
+
 
 The server can start without provider keys, but search will return a clear configuration notice and no fabricated jobs.
 
