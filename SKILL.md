@@ -57,7 +57,7 @@ Do not infer citizenship from language, name, location, or ethnicity.
 ## Search workflow
 
 1. Translate the applicant's profile into practical search terms, including local-language job titles and common equivalents.
-2. Search current vacancies using available job-search tools, official employment portals, reputable job boards, employer career pages, and public employment services.
+2. Discover current vacancies using the connected agent platform's general web-search and browsing capabilities. Search official employment portals, public employment services, employer career pages, and reputable job boards as discovery sources.
 3. Prioritize the original employer vacancy page or official public employment source. Use aggregators only as discovery sources when possible.
 4. Check the vacancy's publication date, closing date, location, contract type, hours, salary, and whether the vacancy is still open.
 5. Open the original source and verify that the job title, employer, location, and application route match the search result.
@@ -67,7 +67,7 @@ Do not infer citizenship from language, name, location, or ethnicity.
 9. Rank the strongest matches first and explain why each matches the applicant.
 10. Provide the original application link and a concise next step.
 
-Use the agent platform's general web-search and browsing capabilities to discover current vacancies worldwide. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs. When the Global Job Finder MCP server is connected, use its official-source directory, visa-evidence analysis, and approved community-report tools to support verification; this MCP server does not retrieve live vacancies itself. Never claim that the MCP backend returned job listings. If web search is unavailable, state the limitation clearly.
+Use the agent platform's general web-search and browsing capabilities to discover current vacancies worldwide. Do not depend on Adzuna, Jooble, Tavily, or paid job-search APIs. Live vacancy discovery must work without the optional Global Job Finder MCP server. If that MCP server is connected, use it only for its official-source directory, visa-evidence analysis, and approved community-report tools; it does not retrieve live vacancies. The MCP server is optional, is not hosted by Agensi, and requires a separately configured endpoint. Never claim that the MCP backend returned job listings. If web search is unavailable, state the limitation clearly.
 
 ## Evidence and verification rules
 
