@@ -27,9 +27,9 @@ export async function searchWebJobs(input: JobSearchInput, limit: number): Promi
   const unique = new Map<string, GlobalJob>();
   for (const response of responses) for (const item of response.results ?? []) {
     const url = String(item.url ?? "");
-    if (!/^https?:\\/\\//i.test(url)) continue;
+    if (!/^https?:\/\//i.test(url)) continue;
     const description = String(item.raw_content || item.content || "").slice(0, 1800);
-    const host = new URL(url).hostname.replace(/^www\\./, "");
+    const host = new URL(url).hostname.replace(/^www\./, "");
     const job: GlobalJob = {
       id: `web:${url}`, title: String(item.title ?? "Web search result"),
       employer: "See source", country: destinations || "Not specified",
@@ -40,7 +40,7 @@ export async function searchWebJobs(input: JobSearchInput, limit: number): Promi
         : "No explicit visa-sponsorship statement detected in the returned page text.",
       retrieved_at: now
     };
-    if (!unique.has(url.toLowerCase().replace(/\\/$/, ""))) unique.set(url.toLowerCase().replace(/\\/$/, ""), job);
+    if (!unique.has(url.toLowerCase().replace(/\/$/, ""))) unique.set(url.toLowerCase().replace(/\\/$/, ""), job);
     // Preserve the hostname in the source label so users can identify the originating site.
     unique.get(url.toLowerCase().replace(/\\/$/, ""))!.source = `Web search: ${host}`;
   }
