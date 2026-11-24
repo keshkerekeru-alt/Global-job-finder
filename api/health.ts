@@ -6,9 +6,7 @@ export default function handler(_req: VercelRequest, res: VercelResponse) {
     status: "ok",
     protocol: "MCP Streamable HTTP",
     endpoint: "/api/mcp",
-    liveSearchConfigured: Boolean(
-      (process.env.ADZUNA_APP_ID && process.env.ADZUNA_APP_KEY) ||
-      process.env.JOOBLE_API_KEY
-    )
+    liveSearchConfigured: false,
+    liveSearchMode: "Use the connected agent platform web search; this MCP server provides official-source and verification tools only."
   });
 }
