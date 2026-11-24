@@ -79,7 +79,7 @@ export async function searchRestrictionReports(refused_applicant_country?: strin
   if (refused_applicant_country) params.set("refused_applicant_country", `ilike.*${refused_applicant_country}*`);
   if (job_country) params.set("job_country", `ilike.*${job_country}*`);
   if (employer_name) params.set("employer_name", `ilike.*${employer_name}*`);
-  const rows = await request(`employer_restriction_reports?${params.toString()}`) as Array<{ report_date: string; evidence_status: string }>;
+  const rows = await request(`employer_restriction_reports?${params.toString()}`) as Array<{ id: number; report_date: string; evidence_status: string }>;
   const now = Date.now();
   const reports = rows.map(row => ({
     ...row,
