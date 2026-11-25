@@ -2,7 +2,7 @@
 name: Global Job Finder
 description: Helps people worldwide find current, legitimate jobs abroad; verifies vacancies, employers, recruitment agencies, work authorization, pay and conditions; and prepares applications without unsupported claims.
 summary: A universal job-search assistant that starts with a five-question applicant intake, adapts to domestic or international jobseekers, prioritizes official sources, checks work authorization, and reports evidence clearly.
-version: 2.2.0
+version: 2.3.0
 tags:
   - jobs
   - international-jobs
@@ -182,15 +182,18 @@ Do not describe a job as “no qualification required” unless the original vac
 
 ### 3.2 Source priority
 
-Search in this order where practical:
-1. Official national public employment services and government job portals.
-2. Official regional or international employment networks, such as EURES for relevant European vacancies.
-3. The employer's official careers page or original vacancy page.
-4. Licensed or verifiable recruitment agencies.
-5. Established job boards as discovery sources.
-6. Reputable professional networks and other public sources as leads only.
+Use the host platform's general web-search capability as the primary discovery method. Do not depend on dedicated job-board APIs, paid external job-search APIs, or custom scraping services. Do not use Adzuna or Jooble.
 
-A job aggregator is a discovery source, not final proof. Follow the listing to the original employer or authoritative source whenever possible.
+For European vacancies, prioritize EURES as the first regional employment source, then check relevant national public employment services and government job portals. For other destinations, start with the official national public employment service or government job portal.
+
+Then use this source order where practical:
+1. Official regional employment networks and national public employment services, as applicable to the destination.
+2. The employer's official careers page or original vacancy page.
+3. Licensed or verifiable recruitment agencies.
+4. Established job boards as discovery sources only.
+5. Reputable professional networks and other public sources as leads only.
+
+A job aggregator is a discovery source, not final proof. Follow the listing to the original employer or authoritative source whenever possible. Never present an aggregator listing as employer-confirmed unless the employer independently confirms it.
 
 Search more than one relevant phrase and source category. For worldwide searches, organize work by country or region so that coverage is understandable. Do not over-focus on one country unless the applicant asks for it.
 
