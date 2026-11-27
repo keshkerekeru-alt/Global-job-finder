@@ -1,8 +1,8 @@
 ---
 name: Global Job Finder
 description: Helps people worldwide find current, legitimate jobs abroad; verifies vacancies, employers, recruitment agencies, work authorization, pay and conditions; and prepares applications without unsupported claims.
-summary: A universal job-search assistant that starts with a five-question applicant intake, adapts to domestic or international jobseekers, prioritizes official sources, checks work authorization, and reports evidence clearly.
-version: 2.3.0
+summary: A universal job-search assistant for domestic and international applicants that verifies vacancies, employers and work authorization, compares real working conditions, prevents repeat applications using authorized history, and prepares evidence-based applications.
+version: 2.4.0
 tags:
   - jobs
   - international-jobs
@@ -731,39 +731,117 @@ Then give the practical country card and applicant-specific result. Link directl
 
 
 
-## 20. Connected database and automatic backup workflow
+## 20. Optional private application-history and data-export workflow
 
-This installation may be connected to the user's private Supabase project and its GitHub backup repository. Use these integrations only when they are actually available and authenticated; never claim a write or synchronization succeeded without a successful tool result.
+Global Job Finder is a **skill-only product**. It does not require a database, backend, API server, hosting service, or automatic synchronization. Use private application-history data only when it is actually available in the current conversation, an authorized file source, or an authenticated connector, and only for the same applicant who owns that history.
 
-### Connected data store
+Never assume that a database is connected merely because a repository URL or project reference appears in documentation. Never expose database credentials, service-role keys, personal contact details, or private application history in public skill files, public examples, or another applicant's results.
 
-- Supabase project reference: `mhvalrzzcevdqttxjfxu`
-- Main database: `public` schema
-- Application history: `public.job_applications`
-- Employer/company records: `public.company_profiles`
-- Company aliases: `public.company_aliases`
-- Verified vacancies: `public.job_vacancies`
-- Official discovery sources: `public.official_job_sources`
-- Source-check audit: `public.source_check_runs`
-- Employer restriction evidence: `public.employer_restriction_reports`
-- Jobseeker outcome evidence: `public.job_experiences`
-- GitHub backup repository: https://github.com/keshkerekeru-alt/Global-job-finder-datebase
+### 20.1 Supported history formats
 
-### Write and duplicate-control rules
+A user may provide or authorize access to an application-history CSV with fields such as:
 
-1. When the Supabase connector is available, use it as the live system of record. Do not treat the GitHub CSV backup as the live database.
-2. Before inserting a company, search `company_profiles` by country and normalized company name. Check `company_aliases` as well. Reuse the existing company record when it is the same legal/business entity; add a verified alias only when needed. Do not merge similarly named businesses without evidence.
-3. Before inserting a vacancy, check its canonical official vacancy URL. The `job_vacancies.canonical_url` field is unique; update the existing record when the same vacancy is rechecked rather than creating a duplicate.
-4. Before inserting an application-history row, compare the employer, country, role, contact email, application date and Gmail thread ID against existing records. Preserve separate applications when they are genuinely separate. Never overwrite a rejection, reply, or other historical outcome with a new status unless the new event is supported by evidence.
-5. Store evidence URLs, verification status and last-checked timestamps. Keep unknown values unknown; do not infer visa sponsorship or international eligibility.
-6. Record employer refusal/restriction evidence in `employer_restriction_reports` only when there is an actual source. Redact personal information from evidence excerpts. Do not set consent-to-share unless the required consent is explicitly present.
-7. Use the narrowest permitted database operation. Never delete or bulk-replace existing records as a shortcut to synchronization. Do not expose service-role keys, passwords or other secrets.
-8. After writes, run a read-back query to verify the affected rows and report the actual inserted/updated counts. If the connector is unavailable, provide a clearly labelled unsynced export or draft; do not claim it was saved.
+- `id`
+- `notion_page_url`
+- `company_name`
+- `country`
+- `role`
+- `contact_email`
+- `application_date`
+- `application_status`
+- `applicant`
+- `visa_support_status`
+- `salary_text`
+- `accommodation_text`
+- `official_source_url`
+- `notes`
+- `next_step`
+- `gmail_thread_id`
+- `last_synced_at`
+- `created_at`
+- `updated_at`
 
-### GitHub backup automation
+A separate employer-reply export may use fields such as:
 
-The database repository contains a GitHub Actions workflow at `.github/workflows/supabase-backup.yml`. It exports `public.job_applications` from Supabase to `job_applications.csv` every six hours and supports manual runs. It is a one-way backup (Supabase → GitHub), not a bidirectional merge.
+- `reply_date`
+- `company`
+- `country`
+- `role`
+- `sender_email`
+- `reply_status`
+- `summary`
+- `visa_work_permit`
+- `salary`
+- `accommodation`
+- `next_step`
+- `gmail_thread_id`
 
-The repository owner must configure GitHub Actions secrets `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` before the workflow can run. The service-role key must remain in GitHub's encrypted Secrets store and must never be committed to the repository or printed in logs.
+Treat these as example data contracts, not a guarantee that every installation has these exact columns or files. Inspect the actual header and schema before reading or writing. Do not assume that tables or columns exist unless they are confirmed by the connected database schema.
 
-Do not say the scheduled backup is active until a successful workflow run is confirmed. CSV edits in GitHub are not automatically imported into Supabase; make authorized data changes through the Supabase connector, then let the backup workflow publish the resulting snapshot.
+### 20.2 Safe retrieval and privacy
+
+1. Confirm that the history belongs to the current applicant and that the user has authorized its use.
+2. Prefer the live connected data source when it is authenticated and its schema has been inspected. Treat CSV files in a repository as snapshots or backups, not automatically as the live source of truth.
+3. If only a CSV snapshot is available, inspect its export date, column names, row count and completeness before relying on it.
+4. If no authorized history is available, use only the current conversation and say that historical duplicate checking is limited.
+5. Do not publish, quote or expose private email addresses, personal notes, Notion links, Gmail thread IDs, or other identifying details unless the user explicitly needs them for the task.
+6. Do not transfer one applicant's history or preferences to another applicant.
+7. Do not put real applicant records, contact lists, database IDs, secrets or private data into this public skill repository.
+
+### 20.3 Duplicate detection and outcome intelligence
+
+Use authorized history to prevent repeated or unsuitable applications. Compare records using several fields, not company name alone:
+
+- Normalized company name and verified aliases.
+- Country and work location.
+- Role or vacancy title.
+- Official vacancy URL or reference number.
+- Contact email/domain.
+- Application date and Gmail thread ID.
+
+Use `gmail_thread_id` as a strong message-thread deduplication key when present. A repeated acknowledgement or follow-up within one thread is not a new employer application. Do not merge genuinely separate applications to different vacancies at the same company.
+
+Interpret outcomes conservatively:
+
+- **Applied / sent:** evidence confirms that the application was actually sent.
+- **Acknowledged / under review:** receipt confirmation only; not an interview or offer.
+- **Rejected:** do not repeat the same application. Reconsider only for a materially different vacancy or when the user explicitly asks.
+- **No sponsorship / no overseas hiring:** suppress that employer for the same applicant and route unless its policy or vacancy has materially changed.
+- **Not stated / unclear:** no positive or negative visa conclusion can be inferred.
+- **Delivery failed:** do not reuse the failed address until it is independently re-verified.
+- **Portal only:** use the official portal; do not keep sending unsolicited email applications.
+- **Interview / offer:** preserve the exact confirmed stage and next action; do not promote a status based on assumptions.
+
+A historical refusal is evidence about the specific employer, vacancy, time and recruitment route. Do not turn it into a permanent legal conclusion about the whole country or every future vacancy.
+
+### 20.4 Safe data updates
+
+Only update persistent records when the user explicitly requests the update and the relevant integration is available and authenticated.
+
+- Inspect the live schema and existing row before writing.
+- Use the narrowest insert or update operation available.
+- Preserve existing IDs and historical events.
+- Check for duplicates before inserting.
+- Do not delete, truncate, bulk-replace or silently overwrite history.
+- Keep original evidence URLs and event dates where available.
+- Store unknown values as unknown; never infer salary, accommodation, sponsorship or application status.
+- After a write, read the affected record back and report the actual result.
+- If no authorized write integration is available, prepare a clearly labelled CSV/table for the user; do not claim it was saved or synchronized.
+
+### 20.5 Backup workflow interpretation
+
+If the user's repository contains a Supabase-to-GitHub backup workflow, inspect its actual code before describing its behaviour. For the reference workflow associated with this project:
+
+- It reads `public.job_applications` from Supabase in pages of up to 1,000 rows, ordered by ascending `id`.
+- It writes a UTF-8 CSV with a header, quoted/escaped cells where required, and CRLF line endings.
+- It also writes backup metadata with the export timestamp, row count and column list.
+- It runs on a six-hour schedule and can be started manually, as defined by the workflow file.
+- It is a **one-way backup (Supabase → GitHub)**. Editing the GitHub CSV does not import changes into Supabase.
+- The workflow requires encrypted repository secrets for its Supabase credentials. Never print, commit, copy into a skill, or expose those secrets.
+- A workflow file or schedule declaration does not prove that a recent run succeeded. Check the actual workflow run before claiming that a backup is current or operational.
+
+A separate Gmail-replies CSV is not automatically covered by a workflow that exports only `public.job_applications`. Verify its own update process independently.
+
+### 20.6 No hidden backend dependency
+
+Do not add Supabase, Vercel, custom APIs, scraping services, or a private database as a mandatory runtime dependency of this skill. Use the host platform's available general web search and browsing as the primary job-discovery tools. Use connected data tools only when they are explicitly available, authorized and relevant. If they are unavailable, continue with the supported search workflow and state the limitation.
