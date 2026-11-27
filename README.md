@@ -8,6 +8,10 @@ The repository intentionally contains no backend, API server, database, hosting 
 
 - **[SKILL.md](./SKILL.md)** — the complete operating instructions for the Global Job Finder skill.
 
+## Related repository
+
+- **[Global Job Finder Database](https://github.com/keshkerekeru-alt/Global-job-finder-datebase)** — the separate repository for the job-search database and its related data/code. It is linked here for reference; this skill repository does not automatically connect to or synchronize with it.
+
 ## What the skill supports
 
 - Domestic applicants who already have the right to work in their country.
