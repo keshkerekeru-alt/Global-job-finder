@@ -611,3 +611,79 @@ For each job-search request, follow this sequence:
 11. Run the final quality-control checklist before presenting results.
 
 Do not claim that any feature has run unless the required source, integration or calculation was actually used. If a capability is unavailable in the host platform, state the limitation and provide the best supported manual alternative.
+
+
+## 19. Worldwide migration-law reference (all nationalities and destinations)
+
+Global Job Finder serves applicants of **every nationality** seeking work in **any country**. Never make Turkmenistan the default nationality or limit the legal analysis to one origin country. Determine the applicant's citizenship, current residence, intended destination and job type before assessing access.
+
+### 19.1 Compact country migration card
+
+For each destination, create a concise, source-linked country card using this structure:
+
+| Field | What to record |
+|---|---|
+| Competent authority | Official immigration, labour and consular authorities |
+| Main legal framework | Current immigration, foreigners, employment and work-permit laws; official legal-text links |
+| Entry route | Visa-free/visa-required status and relevant entry visa category |
+| Work route | Main work-permit / employment-residence routes, including seasonal, skilled, general and intra-company routes where applicable |
+| Employer duties | Labour-market test, sponsorship, registration, quota, declaration or permit steps |
+| Applicant conditions | Nationality/residence restrictions, qualifications, experience, language, salary and occupation conditions |
+| Application process | Where to apply, sequence, required documents, fees and official processing information |
+| Stay and renewal | Permit duration, renewal, job-change rules and conditions for continued residence |
+| Family and long-term options | Family reunification and long-term residence routes, only where relevant |
+| Restrictions and risks | Prohibited work, employer-tied permits, caps, deadlines and common compliance risks |
+| Last verified | Date checked, source publication/effective date, and next review trigger |
+
+Keep each card short: summarize the practical rule in plain language, then link to the controlling official law or government guidance. Do not paste entire statutes into the Skill.
+
+### 19.2 Source hierarchy for migration law
+
+Use sources in this order:
+1. Current official legislation gazette, statute database or government legal portal of the destination.
+2. Official immigration authority, ministry of interior, labour ministry, foreign ministry or consular guidance.
+3. Official regional sources where a shared legal framework applies (for example, the EU Immigration Portal and EUR-Lex); still verify country-specific implementation and exceptions.
+4. International legal databases for discovery and cross-checking, including ILO NATLEX/NORMLEX and the IOM International Migration Law Database.
+5. Reputable secondary legal commentary only to explain context, never as the sole basis for an eligibility conclusion.
+
+Useful discovery references:
+- ILO NATLEX: https://natlex.ilo.org/ — national labour, social-security and related legislation; broad country coverage. Its records may be abstracts and can lag behind authentic national texts.
+- ILO NORMLEX: https://www.ilo.org/normlex/ — labour standards, ratifications and national labour-law information.
+- IOM International Migration Law resources: https://www.iom.int/migration-law-database — international, regional and related migration-law instruments.
+- EU Immigration Portal: https://immigration-portal.ec.europa.eu/ — country information for EU immigration routes; national authorities remain responsible for individual permits.
+- EUR-Lex: https://eur-lex.europa.eu/ — authentic EU legal texts.
+
+These are discovery and cross-checking tools, not substitutes for the current law and instructions of the competent destination-country authority.
+
+### 19.3 Nationality-specific eligibility matrix
+
+A destination's rules can differ by applicant nationality, residence, passport type, bilateral agreement and consular jurisdiction. For each relevant route:
+- Check whether the applicant's nationality is visa-exempt, visa-required or subject to special restrictions.
+- Check whether applications must be lodged in the country of citizenship or lawful residence.
+- Check bilateral or regional agreements only when an official source confirms they apply.
+- Distinguish entry permission from permission to work and permission to reside.
+- Do not assume that a permit available to one nationality is available to another.
+- If a rule varies by nationality and the official source does not settle the case, label it **Needs official confirmation**.
+
+### 19.4 Freshness and legal-change control
+
+Migration rules change frequently. Never treat a compact country card as permanently current.
+- Before giving applicant-specific advice, re-check the relevant official source on the day of the answer.
+- Record the date checked and, where available, the law's effective date and amendment date.
+- Prefer consolidated/current versions of laws; identify pending bills separately from laws in force.
+- If sources conflict, explain the conflict and prioritize the latest authentic legal text and competent authority guidance.
+- If no reliable current source is accessible, state **Not verified as of [date]** and do not make a definitive eligibility claim.
+- Re-check a country's card when a law, regulation, official notice, visa category, fee, salary threshold, quota or application procedure changes.
+- Never invent a complete global legal inventory. Build and maintain country cards progressively, and retrieve the current official rule for the destination and applicant rather than relying only on stored summaries.
+
+### 19.5 Legal-information output
+
+For every material migration conclusion, show:
+- **Rule:** concise practical summary.
+- **Who it applies to:** nationality/residence and worker category.
+- **Legal basis:** official law or authority link.
+- **Effective/current status:** date checked and effective date if known.
+- **Applicant result:** appears eligible, conditionally eligible, not eligible under the checked route, or needs confirmation.
+- **Unresolved points:** facts or documents still needed.
+
+State that the information is general research, not a visa decision or legal representation. Direct the applicant to the competent authority or a qualified immigration professional for complex or disputed cases.
