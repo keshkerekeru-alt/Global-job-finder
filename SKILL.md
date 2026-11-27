@@ -687,3 +687,45 @@ For every material migration conclusion, show:
 - **Unresolved points:** facts or documents still needed.
 
 State that the information is general research, not a visa decision or legal representation. Direct the applicant to the competent authority or a qualified immigration professional for complex or disputed cases.
+
+### 19.6 Country-by-country web research and full-document reading
+
+When the user asks about a destination country, do not stop at the short country card or at search-result snippets. Use the host's available web search and page-opening/browsing tools to visit the relevant databases and official government websites, open the actual country records, and read the underlying legal documents whenever they are publicly accessible.
+
+**Required research sequence for each destination country**
+
+1. Identify the country using its official name and, where useful, ISO country code. Search the ILO NATLEX country filter and open the country-specific results. Search separately for immigration, foreign workers, work permits, employment of non-citizens, seasonal workers, labour migration, social security and employment law. Treat NATLEX records as discovery leads; inspect each record's bibliographic details, enactment/amendment dates, status notes and linked full-text source.
+2. Open the NATLEX record itself. If it contains a full-text law link, follow that link and read the law or official publication. If it contains only an abstract, record that limitation and use the cited law title/number/date to locate the authentic text on the destination country's official gazette or legal portal.
+3. Search the destination country's official immigration authority, labour ministry, interior ministry, foreign ministry and official gazette. Use searches combining the country name with the relevant topic and official-domain terms, for example:
+   - `[COUNTRY] official immigration work permit foreign worker`
+   - `[COUNTRY] official gazette immigration act work authorization`
+   - `[COUNTRY] labour ministry employment of foreign nationals law`
+   - `[COUNTRY] seasonal worker visa official government`
+   - `[LAW TITLE OR NUMBER] official full text`
+   Search in the country's official language as well as English when that is likely to find the authentic legislation. Prefer the official legal title and law number over broad paraphrases.
+4. Open the official result pages, not just the search snippets. Follow links to legislation, regulations, amendments, implementation rules, forms and official guidance. Read the relevant page sections and the actual document text. If the source is a PDF, open/read the PDF pages or use available PDF text extraction; inspect page images when text extraction is missing or garbled. For long laws, locate and read the relevant articles and definitions, but also check commencement, transitional provisions, schedules and amendments that could change their meaning.
+5. Cross-check the law against current implementation guidance from the competent authority. Check whether the legal text is in force, has been amended, repealed, replaced or supplemented. A bill, draft regulation, archived page or old translation must never be presented as current law.
+6. Use ILO NORMLEX for relevant labour standards, country profiles and links to national labour/social legislation. Use IOM's International Migration Law database for relevant international, regional and bilateral instruments; do not mistake treaty records for a country's complete domestic work-permit procedure. For EU destinations, check the EU Immigration Portal and EUR-Lex, then the destination country's own competent authority and national implementing rules.
+7. Follow source links recursively when they lead to a controlling law or official procedure. Stop when the chain reaches the authentic legal text/current competent authority guidance, or when the link is inaccessible. Record inaccessible links and do not pretend to have read them.
+8. Extract the practical provisions relevant to the applicant: scope and definitions; nationality or residence conditions; employer eligibility and obligations; labour-market test; quotas; occupation/qualification/salary conditions; application location and sequence; required documents; fees; processing and decision deadlines; permit validity; renewal; job/employer change; family rights; cancellation and appeal. Cite the exact article/section and page where available.
+9. Compare the source's publication/update date, the law's adoption and commencement dates, amendment dates, and the date checked. If two official sources conflict, explain the conflict and prioritize the latest authentic consolidated legal text, while noting any newer official implementation notice.
+10. Only after reading and cross-checking the sources, update the country card and assess the applicant's specific nationality, residence, passport type and job category. If the underlying text cannot be accessed, say exactly what was available (for example, abstract only, official summary only, or link inaccessible) and mark the point **Needs official confirmation**.
+
+**Document-reading and evidence rules**
+
+- Read the whole relevant legal instrument when it is short. For a lengthy code or act, read the relevant chapters/articles plus definitions, commencement, amendment and transitional provisions. Never claim to have read an entire law if only a page, abstract, snippet or selected article was inspected.
+- Record for each document: official title, law/regulation number, issuing authority, publication date, effective date, amendment/consolidation status, language, URL, relevant articles/pages and date accessed.
+- Preserve the original-language title and cite the official-language text even if the explanation is translated. Clearly label machine translations as translations, not authoritative legal wording.
+- Do not copy entire copyrighted commentary or large sections of a law into the answer. Summarize the relevant rule in your own words and link to the source; quote only short passages when necessary.
+- A database record, search result, country profile or secondary article is not itself proof that the complete law was read. Distinguish **full official text reviewed**, **official summary reviewed**, **database abstract reviewed** and **source inaccessible**.
+- Never bypass login, paywalls, access controls, CAPTCHAs or technical restrictions. Do not scrape a site in violation of its terms. Use public pages and normal browsing/search tools.
+- Do not claim automatic continuous monitoring or background downloads. Revisit the sources when the user asks for an update or when a relevant change is detected during research.
+
+**Country research output**
+
+For each country, include a compact source log:
+| Document/source | Authority | What was actually read | Relevant provision | Effective/update date | Accessed |
+|---|---|---|---|---|---|
+
+Then give the practical country card and applicant-specific result. Link directly to the official document/page, not merely to the database homepage. If no official full text can be found, say so explicitly and provide the best available official abstract or guidance with a clear limitation.
+
