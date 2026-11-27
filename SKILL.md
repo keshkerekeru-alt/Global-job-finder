@@ -280,6 +280,37 @@ Never recommend an agency solely because it appears in a directory, search resul
 
 Flag advance-payment requests, unexplained service fees, personal-account transfers, guaranteed visas, pressure tactics, and refusal to disclose the client employer or written terms. Check current law on recruitment-fee charging in the destination country and agency's country. Do not declare a fee illegal without a current authoritative legal source.
 
+### 4.3 Nationality coverage matrix
+
+For every recruitment agency, investigate and report **which source-country nationals it actually accepts or recruits**, not merely whether it accepts the current applicant. This requirement applies to every applicant using the Skill, regardless of their citizenship.
+
+Build an agency-specific nationality coverage record with these fields:
+- **Explicitly accepted nationalities:** list each country/nationality the agency names in its official candidate eligibility, recruitment, registration or country-partner information.
+- **Accepted source countries/regions:** record regions separately only when the agency explicitly describes them as recruitment markets; do not convert a broad regional statement into a list of individual nationalities.
+- **Not accepted / restricted nationalities:** list only where the agency or an authoritative source explicitly states a restriction.
+- **Unconfirmed nationalities:** countries for which no reliable statement was found. Do not treat silence as acceptance or rejection.
+- **Applicant residence restrictions:** record whether candidates must apply from a particular country, hold residence there, or use a locally licensed partner.
+- **Evidence and date:** provide the exact official agency page, official register or competent authority source, the relevant wording or concise summary, and the date checked.
+
+Use one of these labels for each nationality or country:
+- **Explicitly accepted:** the agency's current official source clearly names the nationality/country or a clearly inclusive global policy.
+- **Accepted through stated regional coverage:** the agency explicitly names a region that includes the country, but does not name the nationality individually. Preserve this lower level of specificity.
+- **Not accepted / restricted:** an explicit current agency policy or authoritative rule says the agency cannot recruit that nationality or source country.
+- **Not stated / unverified:** no reliable evidence establishes acceptance or rejection.
+- **Case-by-case:** the agency says eligibility depends on the vacancy, employer, nationality, residence or individual assessment.
+
+Do not infer nationality coverage from the languages on a website, flags in marketing material, candidate testimonials, social-media posts, partner locations, or the fact that an agency has previously placed one person. Do not infer that “worldwide”, “international” or “all countries” guarantees every nationality can use every vacancy or immigration route; quote the scope and limitations of the actual policy.
+
+Keep two separate questions distinct:
+1. **Agency sourcing/acceptance:** from which countries the agency is willing and operationally able to receive candidates or source workers.
+2. **Destination-country work authorization:** whether a person of that nationality and residence can legally obtain the required visa/work permit for the specific destination, employer, occupation and contract.
+
+An agency may accept registrations from a country but have no current vacancy, no employer mandate, no work-permit route, or no ability to deploy candidates from that country. Conversely, a country's immigration rules may allow a work route even when a particular agency does not recruit there. Never treat one as proof of the other.
+
+For every agency shortlist, show a compact **Nationality coverage** field. If the agency names many countries, list all named countries when practical and link the official source; otherwise give the exact stated region and mark the individual-country list as not specified. Do not silently shorten the list in a way that changes its meaning.
+
+When the agency does not publish nationality coverage, contact or prepare a question for the agency asking which nationalities and countries of residence it currently accepts for the relevant destination and vacancy. Do not claim an answer until the agency replies or publishes reliable evidence.
+
 ### 4.2 Separate agency and direct-employer results
 
 In search results and reports, use distinct headings:
