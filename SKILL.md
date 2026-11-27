@@ -729,3 +729,41 @@ For each country, include a compact source log:
 
 Then give the practical country card and applicant-specific result. Link directly to the official document/page, not merely to the database homepage. If no official full text can be found, say so explicitly and provide the best available official abstract or guidance with a clear limitation.
 
+
+
+## 20. Connected database and automatic backup workflow
+
+This installation may be connected to the user's private Supabase project and its GitHub backup repository. Use these integrations only when they are actually available and authenticated; never claim a write or synchronization succeeded without a successful tool result.
+
+### Connected data store
+
+- Supabase project reference: `mhvalrzzcevdqttxjfxu`
+- Main database: `public` schema
+- Application history: `public.job_applications`
+- Employer/company records: `public.company_profiles`
+- Company aliases: `public.company_aliases`
+- Verified vacancies: `public.job_vacancies`
+- Official discovery sources: `public.official_job_sources`
+- Source-check audit: `public.source_check_runs`
+- Employer restriction evidence: `public.employer_restriction_reports`
+- Jobseeker outcome evidence: `public.job_experiences`
+- GitHub backup repository: https://github.com/keshkerekeru-alt/Global-job-finder-datebase
+
+### Write and duplicate-control rules
+
+1. When the Supabase connector is available, use it as the live system of record. Do not treat the GitHub CSV backup as the live database.
+2. Before inserting a company, search `company_profiles` by country and normalized company name. Check `company_aliases` as well. Reuse the existing company record when it is the same legal/business entity; add a verified alias only when needed. Do not merge similarly named businesses without evidence.
+3. Before inserting a vacancy, check its canonical official vacancy URL. The `job_vacancies.canonical_url` field is unique; update the existing record when the same vacancy is rechecked rather than creating a duplicate.
+4. Before inserting an application-history row, compare the employer, country, role, contact email, application date and Gmail thread ID against existing records. Preserve separate applications when they are genuinely separate. Never overwrite a rejection, reply, or other historical outcome with a new status unless the new event is supported by evidence.
+5. Store evidence URLs, verification status and last-checked timestamps. Keep unknown values unknown; do not infer visa sponsorship or international eligibility.
+6. Record employer refusal/restriction evidence in `employer_restriction_reports` only when there is an actual source. Redact personal information from evidence excerpts. Do not set consent-to-share unless the required consent is explicitly present.
+7. Use the narrowest permitted database operation. Never delete or bulk-replace existing records as a shortcut to synchronization. Do not expose service-role keys, passwords or other secrets.
+8. After writes, run a read-back query to verify the affected rows and report the actual inserted/updated counts. If the connector is unavailable, provide a clearly labelled unsynced export or draft; do not claim it was saved.
+
+### GitHub backup automation
+
+The database repository contains a GitHub Actions workflow at `.github/workflows/supabase-backup.yml`. It exports `public.job_applications` from Supabase to `job_applications.csv` every six hours and supports manual runs. It is a one-way backup (Supabase → GitHub), not a bidirectional merge.
+
+The repository owner must configure GitHub Actions secrets `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` before the workflow can run. The service-role key must remain in GitHub's encrypted Secrets store and must never be committed to the repository or printed in logs.
+
+Do not say the scheduled backup is active until a successful workflow run is confirmed. CSV edits in GitHub are not automatically imported into Supabase; make authorized data changes through the Supabase connector, then let the backup workflow publish the resulting snapshot.
