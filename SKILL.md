@@ -247,6 +247,49 @@ Do not call a company fraudulent unless strong evidence supports that conclusion
 
 Never pay a recruiter, send documents, contact an employer, submit an application, accept an offer, or make a commitment on the applicant's behalf without explicit authorization for that specific action. Before any payment or document transfer, explain the recipient, amount, purpose, terms and risks.
 
+### 4.1 Dedicated recruitment-agency search
+
+Recruitment agencies are a separate, required discovery channel alongside direct employers. When the applicant is open to agency-assisted hiring, search for both direct employers and recruitment agencies, licensed employment agencies, staffing firms and temporary-work agencies. Do not replace direct-employer research with agency listings. Present the two channels separately so the applicant can see who would legally employ them.
+
+For each target country, search using local-language and English variants for “licensed recruitment agency”, “employment agency”, “temporary work agency”, “international recruitment”, “foreign worker recruitment” and the relevant occupation or seasonal-work category. Check official public registers of licensed/private employment agencies, labour-ministry registers and other competent government sources wherever available.
+
+For every agency shortlisted, verify and record:
+1. Exact legal name, registration/licence number where available, legal status and registered country.
+2. Official website, business address and contact details published on that website.
+3. Registration or licence in the competent official register, including status and validity where shown.
+4. Whether it recruits for the stated country, occupation and contract type.
+5. Whether it accepts applicants with the applicant's citizenship and current residence. Do not infer this from a general “international recruitment” claim.
+6. Whether it can identify the actual client employer and original vacancy. Verify the vacancy and employer independently whenever possible.
+7. Who signs the employment contract and who pays the worker: the agency, a client employer, or another entity.
+8. Whether the agency explicitly supports the required work-permit, visa or residence-permit process for this applicant's nationality.
+9. All worker-paid fees, their legal basis, amount, timing, refund terms and service provided. Check destination-country rules on charging recruitment fees; do not assume a requested fee is lawful.
+10. Salary, working hours, contract duration, accommodation, meals, transport, insurance and deductions, using written and independently verifiable evidence.
+
+Use these agency evidence labels:
+- **Officially registered/licensed:** a current official register or competent authority confirms the agency's status.
+- **Registration not verified:** no authoritative register entry could be confirmed.
+- **Employer mandate confirmed:** the client employer or an authoritative source confirms the agency is authorized for the specific recruitment.
+- **Mandate not confirmed:** the agency's relationship with the named employer is not independently established.
+- **Accepts this applicant:** explicit current evidence supports recruitment of applicants with this nationality/residence.
+- **Applicant acceptance not stated:** no reliable nationality-specific confirmation found.
+- **Work-permit support confirmed / not stated / not offered / unclear:** apply the evidence standard used in Section 5.
+
+A licence proves only the agency's legal registration or authorization within its scope; it does not prove that a particular vacancy is real, that the agency has a client mandate, that the applicant is eligible, or that a visa will be granted. Verify each separately.
+
+Never recommend an agency solely because it appears in a directory, search result, social-media page or paid advertisement. Treat directories and job boards as discovery leads, not proof of legitimacy. If the official register is unavailable or does not cover the relevant agency type, state that limitation and seek corroboration from the competent authority and the named client employer.
+
+Flag advance-payment requests, unexplained service fees, personal-account transfers, guaranteed visas, pressure tactics, and refusal to disclose the client employer or written terms. Check current law on recruitment-fee charging in the destination country and agency's country. Do not declare a fee illegal without a current authoritative legal source.
+
+### 4.2 Separate agency and direct-employer results
+
+In search results and reports, use distinct headings:
+- **Direct employers** — the company expected to employ the applicant.
+- **Recruitment agencies** — intermediaries whose registration, mandate, vacancy and fee terms have been checked.
+
+For agency-mediated vacancies, show both the agency and actual client employer whenever known. If the client is confidential or undisclosed, say so plainly and lower the verification confidence. Do not count an agency and its client as two independent vacancies. Deduplicate by underlying employer, vacancy reference, role and location.
+
+Rank agencies by legal verification, confirmed client mandate and vacancy, acceptance of the applicant's nationality, work-permit support, transparent fees and contract conditions—not by the number of advertised jobs. An agency with no verified current vacancy may be listed separately as a verified recruitment channel, never as an open job.
+
 ## 5. Work visa and immigration verification
 
 Immigration eligibility is a separate question from whether a vacancy exists.
