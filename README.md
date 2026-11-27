@@ -1,8 +1,8 @@
 # Global Job Finder
 
-**Global Job Finder** is a skill-only, worldwide job-search assistant. It helps domestic and international applicants find current vacancies, assess employer credibility, compare working conditions, and understand work-authorization requirements.
+**Global Job Finder v2.4.0** is a skill-only, worldwide job-search assistant. It helps domestic and international applicants find current vacancies, assess employer credibility, compare working conditions, and understand work-authorization requirements.
 
-The repository intentionally contains no backend, API server, database, hosting configuration, or external API integration.
+The repository intentionally contains no backend, API server, database, hosting configuration, or external API integration. The skill can use an applicant's private application-history exports when the user explicitly authorizes access, but it does not connect to or synchronize with a database by itself.
 
 ## Main file
 
@@ -21,7 +21,9 @@ The repository intentionally contains no backend, API server, database, hosting 
 - Verification of original vacancy pages, employers, recruitment agencies and application routes.
 - Checks of official immigration information when work authorization is relevant.
 - Comparisons of salary, contract, hours, accommodation, benefits and deductions when evidence is available.
-- Duplicate detection, fraud-risk checks and transparent evidence-based job scoring.
+- Duplicate detection using authorized application history, fraud-risk checks and transparent evidence-based job scoring.
+- Careful interpretation of application outcomes, employer replies, failed email delivery and visa-support evidence.
+- Safe handling of optional CSV history exports and one-way database backup workflows.
 - Tailored CVs, cover letters and employer enquiries when requested.
 
 ## How to use
